@@ -1,11 +1,12 @@
 import 'package:youtube_api/youtube_api.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 //initializes api with auth key
-YoutubeAPI initAPI() {
-  //never push key to public repo, so is blank here
-  String key = '';
+Future<YoutubeAPI> initAPI() async {
+  await DotEnv().load(".env");
+  String key = DotEnv().env["KEY"];
   return new YoutubeAPI(key, maxResults: 15, type: "video");
 }
 
@@ -58,7 +59,7 @@ class _VidResultState extends State<VidResult> {
 //Test main
 void main() async {
   //initialize api
-  final ytapi = initAPI();
+  final ytapi = await initAPI();
 
   //search and wait for results
   var stuff = await search(
