@@ -1,6 +1,6 @@
 class Song {
-  String name;
-  String duration; // String type for now
+  final String name;
+  final String duration; // String type for now
 
   String get songname {
     return name;
@@ -19,4 +19,11 @@ class Song {
   }
 
   Song({this.name, this.duration});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'duration': duration,
+    };
+  }
 }

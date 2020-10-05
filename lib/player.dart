@@ -1,7 +1,92 @@
 import 'package:flutter/material.dart';
 import 'song.dart';
 
-void main() {
+import 'dart:async';
+
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+void main() async {
+  // Avoid errors caused by flutter upgrade.
+  // Importing 'package:flutter/widgets.dart' is required.
+  WidgetsFlutterBinding.ensureInitialized();
+  // Open the database and store the reference.
+  final Future<Database> database = openDatabase(
+    // Set the path to the database. Note: Using the `join` function from the
+    // `path` package is best practice to ensure the path is correctly
+    // constructed for each platform.
+    join(await getDatabasesPath(), 'song_database.db'),
+    onCreate: (db, version) {
+      return db.execute(
+        "CREATE TABLE songs (name TEXT, duration TEXT)",
+      );
+    },
+    version: 1,
+  );
+
+  // Define a function that inserts songs into the database
+  Future<void> insertSong(Song song) async {
+    // Get a reference to the database.
+    final Database db = await database;
+
+    // Insert the Song into the correct table. You might also specify the
+    // `conflictAlgorithm` to use in case the same song is inserted twice.
+    //
+    // In this case, replace any previous data.
+    await db.insert(
+      'songs',
+      song.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+// A method that retrieves all the songs from the songs table.
+  Future<List<Song>> songs() async {
+    // Get a reference to the database.
+    final Database db = await database;
+
+    // Query the table for all The Songs.
+    final List<Map<String, dynamic>> maps = await db.query('songs');
+
+    // Convert the List<Map<String, dynamic> into a List<Song>.
+    return List.generate(maps.length, (i) {
+      return Song(
+        //id: maps[i]['id'],
+        name: maps[i]['name'],
+        duration: maps[i]['duration'],
+      );
+    });
+  }
+
+  Future<void> updateSong(Song song) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Song.
+    await db.update(
+      'songs',
+      song.toMap(),
+      // Ensure that the Dog has a matching id.
+      where: "id = ?",
+      // Pass the Song's name as a whereArg to prevent SQL injection.
+      whereArgs: [song.name],
+    );
+  }
+
+  Future<void> deleteSong(String name) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Remove the Song from the Database.
+    await db.delete(
+      'songs',
+      // Use a `where` clause to delete a specific dog.
+      where: "id = ?",
+      // Pass the Song's name as a whereArg to prevent SQL injection.
+      whereArgs: [name],
+    );
+  }
+
   runApp(MaterialApp(
     home: PlayListMainScreen(),
   ));
