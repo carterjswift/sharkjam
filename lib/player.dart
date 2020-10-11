@@ -84,7 +84,7 @@ class _PlayListState extends State<PlayListMainScreen> {
     songLocal = song;
 
     return Card(
-      color: Colors.blueGrey[900],
+      color: Color(0xFF261D1D),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,7 +132,7 @@ class _PlayListState extends State<PlayListMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blueGrey[900],
+        backgroundColor: Color(0xFF261D1D),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: AppBar(
@@ -140,20 +140,27 @@ class _PlayListState extends State<PlayListMainScreen> {
             title: Text(
               'your playlist',
             ),
-            backgroundColor: Colors.blueGrey[900],
+            backgroundColor: Color(0xFF261D1D),
             centerTitle: true,
             actions: <Widget>[
-              Padding(
-                  child: GestureDetector(
-                      onTap: () {
-                        print('+');
-                        natigateToSearchMusic(context);
-                      },
-                      child: Icon(Icons.add)),
-                  padding: EdgeInsets.symmetric(horizontal: 16.0))
-            ],
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(context: context, delegate: DataSearch());
+                })
+            ]),
+            // actions: <Widget>[
+            //   Padding(
+            //       child: GestureDetector(
+            //           onTap: () {
+            //             print('+');
+            //             natigateToSearchMusic(context);
+            //           },
+            //           child: Icon(Icons.add)),
+            //       padding: EdgeInsets.symmetric(horizontal: 16.0))
+            // ],
           ),
-        ),
+        
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
@@ -163,10 +170,10 @@ class _PlayListState extends State<PlayListMainScreen> {
 }
 
 //Method that navigates from playlist screen to searchmusic screen
-Future natigateToSearchMusic(context) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => SearchMusic()));
-}
+// Future natigateToSearchMusic(context) async {
+//   Navigator.push(
+//       context, MaterialPageRoute(builder: (context) => SearchMusic()));
+// }
 
 //Method that navigates from playlist screen to musiccontrol screen
 Future natigateToMusicControl(context) async {
