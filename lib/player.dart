@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_api/youtube_api.dart';
 import 'song.dart';
 
 void main() {
@@ -84,7 +85,7 @@ class _PlayListState extends State<PlayListMainScreen> {
     songLocal = song;
 
     return Card(
-      color: Colors.blueGrey[900],
+      color: const Color(0xFF261D1D),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -132,7 +133,7 @@ class _PlayListState extends State<PlayListMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blueGrey[900],
+        backgroundColor: const Color(0xFF261D1D),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: AppBar(
@@ -140,7 +141,7 @@ class _PlayListState extends State<PlayListMainScreen> {
             title: Text(
               'your playlist',
             ),
-            backgroundColor: Colors.blueGrey[900],
+            backgroundColor: const Color(0xFF261D1D),
             centerTitle: true,
             actions: <Widget>[
               Padding(
@@ -200,14 +201,49 @@ class SearchMusic extends StatelessWidget {
   }
 }
 
+class Video {
+  String title;
+  String id;
+  String channel;
+  String url;
+
+  Video(
+      this.title,
+      this.id,
+      this.channel,
+      this.url,
+      );
+}
+List<YT_API> ytResult = [];
+List<Video> results = [];
+Future<List<Video>> search(String q, YoutubeAPI api) async {
+
+  ytResult = await api.search(q);
+
+  ytResult.forEach((YT_API vid) {
+    print(vid.title);             // Test
+    results.add(new Video(        // Add video data to results[]
+      vid.title,
+      vid.id,
+      vid.channelTitle,
+      vid.url,
+    ));
+  });
+  print("ytResult length is " + ytResult.length.toString());  // Test
+  return results;
+}
+
 class DataSearch extends SearchDelegate<String> {
-  final cities = [
-    "On The Run", // Will be replaced with a list of available music name
+  static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
+  YoutubeAPI ytApi = YoutubeAPI(key);
+
+  final music = [
+    "On The Run", // Should be replaced with a list of available youTube video names
     "Wake Me Up",
     "We Are The World"
   ];
 
-  final recentCities = [
+  final recentMusic = [
     "On The Run", // Will be replaced with recent music names
     "Wake Me Up",
     "We Are The World"
@@ -238,18 +274,92 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    throw UnimplementedError();
+    // Future<List<Video>> results = search(query, ytApi);
+    search(query, ytApi);
+    print("Submission successfully returned buildResults");   // Should be printed everytime query is entered.
+
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Youtube API'),
+      // ),
+      body: Container(
+        child: ListView.builder(
+          itemCount: ytResult.length,
+          itemBuilder: (_, int index) => listItem(index),   // Not sure why but search result is not affected until second enter.
+        ),
+      ),
+    );
+    // Create a list of cards by looping through the list, retrieving information and arranging them.
+    // for (Video vid in results)
+    // print(results);
+  }
+
+  ///
+  /// Code copied from youtube_api page.
+  ///
+  Widget listItem(index) {
+    print("code run has reached listItem");
+    return Card(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 7.0),
+        padding: EdgeInsets.all(12.0),
+        child: Row(
+          children: <Widget>[
+            Image.network(
+              ytResult[index].thumbnail['default']['url'],
+            ),
+            Padding(padding: EdgeInsets.only(right: 20.0)),
+            Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        ytResult[index].title,
+                        softWrap: true,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      Padding(padding: EdgeInsets.only(bottom: 1.5)),
+                      Text(
+                        ytResult[index].channelTitle,
+                        softWrap: true,
+                      ),
+                      Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                      Text(
+                        ytResult[index].url,
+                        softWrap: true,
+                      ),
+                    ]))
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty ? recentCities : cities;
+    final suggestionList = query.isEmpty ? recentMusic : music.where((p) => p.startsWith(query)).toList();
+    // search(query, ytApi);       // If this doesn't work, I don't know what else would.
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-        leading: Icon(Icons.music_note),
-        title: Text(suggestionList[index]),
+          onTap: (){
+            showResults(context);
+          },
+
+          leading: Icon(Icons.music_note),
+          title: RichText(text: TextSpan(
+            text: suggestionList[index].substring(0, query.length),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            children: [
+              TextSpan(
+                text: suggestionList[index].substring(query.length),
+                style: TextStyle(color: Colors.grey)
+              )
+            ]
+          ),
+        ),
       ),
-      itemCount: suggestionList.length,
+    itemCount: suggestionList.length,
     );
   }
 }
