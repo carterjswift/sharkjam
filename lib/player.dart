@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'song.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'api.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -104,7 +106,7 @@ class _PlayListState extends State<PlayListMainScreen> {
             ),
             onTap: () {
               print('play the song');
-              natigateToMusicControl(context);
+              navigateToMusicControl(context);
             },
           ),
           Container(
@@ -147,7 +149,7 @@ class _PlayListState extends State<PlayListMainScreen> {
                   child: GestureDetector(
                       onTap: () {
                         print('+');
-                        natigateToSearchMusic(context);
+                        navigateToSearchMusic(context);
                       },
                       child: Icon(Icons.add)),
                   padding: EdgeInsets.symmetric(horizontal: 16.0))
@@ -163,13 +165,13 @@ class _PlayListState extends State<PlayListMainScreen> {
 }
 
 //Method that navigates from playlist screen to searchmusic screen
-Future natigateToSearchMusic(context) async {
+Future navigateToSearchMusic(context) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => SearchMusic()));
 }
 
 //Method that navigates from playlist screen to musiccontrol screen
-Future natigateToMusicControl(context) async {
+Future navigateToMusicControl(context) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MusicControl()));
 }
@@ -255,7 +257,78 @@ class DataSearch extends SearchDelegate<String> {
 }
 
 //musiccontrol screen
-class MusicControl extends StatelessWidget {
+class MusicControl extends StatefulWidget {
+  @override
+  _MusicControlState createState() => _MusicControlState();
+}
+
+class _MusicControlState extends State<MusicControl> {
+  List<Video> songs = [
+    Video("maple leaf rag", "ZYqy7pBqbw4", "Scott Joplin", ""),
+    Video("Medallo City", "XKjpVgpXoLI", "Maluma", ""),
+    Video("Bohemian Rhapsody", "fJ9rUzIMcZQ", "Queen", ""),
+  ];
+  YoutubePlayerController _controller;
+  YoutubePlayer _player;
+  YoutubePlayerFlags flags = YoutubePlayerFlags(autoPlay: false);
+  int currentSongIndex = 0;
+  bool isPlaying = false;
+
+  void toggle() {
+    setState(() {
+      isPlaying = !isPlaying;
+    });
+    if (isPlaying) {
+      _controller.play();
+    } else {
+      _controller.pause();
+    }
+  }
+
+  void playNewSong(int songIndex) {
+    setState(() {
+      if (songIndex >= songs.length) {
+        songIndex = 0;
+      } else if (songIndex < 0) {
+        songIndex = songs.length - 1;
+      }
+      currentSongIndex = songIndex;
+      print(currentSongIndex);
+      _controller.cue(songs[currentSongIndex].id);
+    });
+
+    if (isPlaying) {
+      _controller.play();
+    } else {
+      _controller.pause();
+    }
+  }
+
+  void playAfterEnd(YoutubeMetaData _) {
+    playNext();
+  }
+
+  void playNext() {
+    playNewSong(currentSongIndex + 1);
+  }
+
+  void playPrev() {
+    playNewSong(currentSongIndex - 1);
+  }
+
+  _MusicControlState() {
+    _controller = YoutubePlayerController(
+      initialVideoId: songs[currentSongIndex].id,
+      flags: flags,
+    );
+    _player = YoutubePlayer(
+        controller: _controller,
+        width: 0,
+        onReady: () {
+          setState(() {});
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -273,23 +346,26 @@ class MusicControl extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          _player,
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
             child: Image(
-                image: NetworkImage(
-              "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png",
-              scale: 0.9,
-            )),
+                image: NetworkImage(YoutubePlayer.getThumbnail(
+                    videoId: songs[currentSongIndex].id))),
           ),
           Container(
-              child: Text("On The Run", // Will be replaced with music title.
+              child: Text(
+                  songs[currentSongIndex]
+                      .title, // Will be replaced with music title.
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: "Roboto",
                     fontSize: 30.0,
                   ))),
           Container(
-              child: Text("Pink Floyd", // Will be replaced with music artist.
+              child: Text(
+                  songs[currentSongIndex]
+                      .channel, // Will be replaced with music artist.
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: "Roboto",
@@ -298,37 +374,47 @@ class MusicControl extends StatelessWidget {
           Container(
               // child: Slider              // Will implement slider later.
               ),
-          Container(
-              padding: EdgeInsets.fromLTRB(0, 20.0, 0, 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: Image.asset(
-                      "assets/back.png",
-                      color: Colors.white,
-                    ),
-                    iconSize: 120,
-                    onPressed: () {},
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: IconButton(
+                  icon: Image.asset(
+                    "assets/back.png",
+                    color: Colors.white,
                   ),
-                  IconButton(
-                    icon: Image.asset(
-                      "assets/pause.png",
-                      color: Colors.white,
-                    ),
-                    iconSize: 120,
-                    onPressed: () {},
+                  iconSize: 120,
+                  onPressed: () {
+                    playPrev();
+                  },
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Image.asset(
+                    isPlaying ? "assets/pause.png" : "assets/play.png",
+                    color: Colors.white,
                   ),
-                  IconButton(
-                    icon: Image.asset(
-                      "assets/forward.png",
-                      color: Colors.white,
-                    ),
-                    iconSize: 120,
-                    onPressed: () {},
+                  iconSize: 120,
+                  onPressed: () {
+                    toggle();
+                  },
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Image.asset(
+                    "assets/forward.png",
+                    color: Colors.white,
                   ),
-                ],
-              ))
+                  iconSize: 120,
+                  onPressed: () {
+                    playNext();
+                  },
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
