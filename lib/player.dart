@@ -220,10 +220,10 @@ List<YT_API> ytResult = [];
 List<Video> results = [];
 Future<List<Video>> search(String q, YoutubeAPI api) async {
 
-  ytResult = await api.search(q);
+  ytResult = await api.search(q);   // Perhaps this is taking too long?
 
   ytResult.forEach((YT_API vid) {
-    print(vid.title);             // Test
+    // print(vid.title);             // Test
     results.add(new Video(        // Add video data to results[]
       vid.title,
       vid.id,
@@ -279,7 +279,9 @@ class DataSearch extends SearchDelegate<String> {
     // Future<List<Video>> results = search(query, ytApi);
     search(query, ytApi);
     print("Submission successfully returned buildResults");   // Should be printed everytime query is entered.
-
+    ytResult.forEach((YT_API vid) {
+      print(vid.title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
+    });
     return Scaffold(
       // appBar: AppBar(
       //   title: Text('Youtube API'),
@@ -288,6 +290,12 @@ class DataSearch extends SearchDelegate<String> {
         child: ListView.builder(
           itemCount: ytResult.length,
           itemBuilder: (_, int index) => listItem(index),   // Not sure why but search result is not affected until second enter.
+          // GestureDetector(
+          //   onTap: () {
+          //     print('play the searched song');
+          //     // navigateToMusicControl();  // Not sure about the Gesture Detector close.
+          //   },
+          // ),
         ),
       ),
     );
@@ -302,38 +310,57 @@ class DataSearch extends SearchDelegate<String> {
   Widget listItem(index) {
     print("code run has reached listItem");
     return Card(
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 7.0),
-        padding: EdgeInsets.all(12.0),
-        child: Row(
-          children: <Widget>[
-            Image.network(
-              ytResult[index].thumbnail['default']['url'],
-            ),
-            Padding(padding: EdgeInsets.only(right: 20.0)),
-            Expanded(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        ytResult[index].title,
-                        softWrap: true,
-                        style: TextStyle(fontSize: 18.0),
-                      ),
-                      Padding(padding: EdgeInsets.only(bottom: 1.5)),
-                      Text(
-                        ytResult[index].channelTitle,
-                        softWrap: true,
-                      ),
-                      Padding(padding: EdgeInsets.only(bottom: 3.0)),
-                      Text(
-                        ytResult[index].url,
-                        softWrap: true,
-                      ),
-                    ]))
-          ],
+      child: GestureDetector(
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 7.0),
+          padding: EdgeInsets.all(12.0),
+          child: Row(
+            children: <Widget>[
+              Padding(padding: EdgeInsets.only(right: 20.0)),
+              Image.network(
+                ytResult[index].thumbnail['default']['url'],
+              ),
+              // GestureDetector(
+              //   child: Row(
+              //       children: <Widget> [
+              //         Image.network(
+              //           ytResult[index].thumbnail['default']['url'],
+              //         ),
+              //       ]
+              //   ),
+              //   onTap: () {
+              //     print('Add Song');
+              //     // navigateToMusicControl(context);
+              //   },
+              // ),
+              Expanded(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          ytResult[index].title,
+                          softWrap: true,
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                        Padding(padding: EdgeInsets.only(bottom: 1.5)),
+                        Text(
+                          ytResult[index].channelTitle,
+                          softWrap: true,
+                        ),
+                        Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                        Text(
+                          ytResult[index].url,
+                          softWrap: true,
+                        ),
+                      ]))
+            ],
+          ),
         ),
+        onTap: () {
+          print('Add Song');
+          // navigateToMusicControl(context);
+        },
       ),
     );
   }
