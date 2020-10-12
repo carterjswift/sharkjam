@@ -1,29 +1,27 @@
-class Song {
-  final String name;
-  final String duration; // String type for now
-
-  String get songname {
-    return name;
-  }
-
-  String get songduration {
-    return duration;
-  }
-
-  set songname(String name) {
-    this.songname = name;
-  }
-
-  set songduration(String duration) {
-    this.songduration = duration;
-  }
+class Song extends Iterable<Song> {
+  String name;
+  String duration; // String type for now
 
   Song({this.name, this.duration});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'duration': duration,
-    };
+  String get songName {
+    return name;
   }
+
+  String get songDuration {
+    return duration;
+  }
+
+  set songName(String name) {
+    this.songName = name;
+  }
+
+  set songDuration(String duration) {
+    this.songDuration = duration;
+  }
+
+  @override
+  // TODO: implement iterator
+  Iterator<Song> get iterator => throw UnimplementedError();
+
 }

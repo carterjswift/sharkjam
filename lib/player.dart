@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_api/youtube_api.dart';
 import 'song.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'api.dart';
@@ -103,66 +104,68 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
+List<Song> songs = [
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+];
+
 class _PlayListState extends State<PlayListMainScreen> {
   //Create a stateful list for now
-  List<Song> songs = [
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-  ];
+  // Moved to above so it can be referenced in other classes.
 
   //Method that creates the row of the name of the song,
   //duration and bump-up button.
@@ -294,14 +297,49 @@ class SearchMusic extends StatelessWidget {
   }
 }
 
+class Video {
+  String title;
+  String id;
+  String channel;
+  String url;
+
+  Video(
+      this.title,
+      this.id,
+      this.channel,
+      this.url,
+      );
+}
+List<YT_API> ytResult = [];
+List<Video> results = [];
+Future<List<Video>> search(String q, YoutubeAPI api) async {
+
+  ytResult = await api.search(q);   // Perhaps this is taking too long?
+
+  ytResult.forEach((YT_API vid) {
+    // print(vid.title);             // Test
+    results.add(new Video(        // Add video data to results[]
+      vid.title,
+      vid.id,
+      vid.channelTitle,
+      vid.url,
+    ));
+  });
+  print("ytResult length is " + ytResult.length.toString());  // Test
+  return results;
+}
+
 class DataSearch extends SearchDelegate<String> {
-  final cities = [
-    "On The Run", // Will be replaced with a list of available music name
+  static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
+  YoutubeAPI ytApi = YoutubeAPI(key);
+
+  final music = [
+    "On The Run", // Should be replaced with a list of available youTube video names
     "Wake Me Up",
     "We Are The World"
   ];
 
-  final recentCities = [
+  final recentMusic = [
     "On The Run", // Will be replaced with recent music names
     "Wake Me Up",
     "We Are The World"
@@ -332,18 +370,103 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    //throw UnimplementedError();
+    // Future<List<Video>> results = search(query, ytApi);
+    search(query, ytApi);
+    print("Submission successfully returned buildResults");   // Should be printed everytime query is entered.
+    ytResult.forEach((YT_API vid) {
+      print(vid.title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
+    });
+    return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Youtube API'),
+      // ),
+      body: Container(
+        child: ListView.builder(
+          itemCount: ytResult.length,
+          itemBuilder: (_, int index) => listItem(index),   // Not sure why but search result is not affected until second enter.
+        ),
+      ),
+    );
+    // Create a list of cards by looping through the list, retrieving information and arranging them.
+    // for (Video vid in results)
+    // print(results);
+  }
+
+  ///
+  /// Code copied from youtube_api page.
+  ///
+  Widget listItem(index) {
+    print("code run has reached listItem");
+    return Card(
+      child: GestureDetector(
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 7.0),
+          padding: EdgeInsets.all(12.0),
+          child: Row(
+            children: <Widget>[
+              Padding(padding: EdgeInsets.only(right: 20.0)),
+              Image.network(
+                ytResult[index].thumbnail['default']['url'],
+              ),
+              Expanded(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          ytResult[index].title,
+                          softWrap: true,
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                        Padding(padding: EdgeInsets.only(bottom: 1.5)),
+                        Text(
+                          ytResult[index].channelTitle,
+                          softWrap: true,
+                        ),
+                        Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                        Text(
+                          ytResult[index].url,
+                          softWrap: true,
+                        ),
+                      ]))
+            ],
+          ),
+        ),
+        onTap: () {
+          print('Add Song');
+          Song song = new Song(name: ytResult[index].title, duration: ytResult[index].duration);
+          songs.add(song);
+          print(songs.elementAt(songs.length-1).songName);
+          // navigateToMusicControl(context);
+        },
+      ),
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty ? recentCities : cities;
+    final suggestionList = query.isEmpty ? recentMusic : music.where((p) => p.startsWith(query)).toList();
+    // search(query, ytApi);       // If this doesn't work, I don't know what else would.
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-        leading: Icon(Icons.music_note),
-        title: Text(suggestionList[index]),
+          onTap: (){
+            showResults(context);
+          },
+
+          leading: Icon(Icons.music_note),
+          title: RichText(text: TextSpan(
+            text: suggestionList[index].substring(0, query.length),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            children: [
+              TextSpan(
+                text: suggestionList[index].substring(query.length),
+                style: TextStyle(color: Colors.grey)
+              )
+            ]
+          ),
+        ),
       ),
-      itemCount: suggestionList.length,
+    itemCount: suggestionList.length,
     );
   }
 }
