@@ -1,22 +1,27 @@
-class Song {
+class Song extends Iterable<Song> {
   String name;
   String duration; // String type for now
 
-  String get songname {
+  Song({this.name, this.duration});
+
+  String get songName {
     return name;
   }
 
-  String get songduration {
+  String get songDuration {
     return duration;
   }
 
-  set songname(String name) {
-    this.songname = name;
+  set songName(String name) {
+    this.songName = name;
   }
 
-  set songduration(String duration) {
-    this.songduration = duration;
+  set songDuration(String duration) {
+    this.songDuration = duration;
   }
 
-  Song({this.name, this.duration});
+  @override
+  // TODO: implement iterator
+  Iterator<Song> get iterator => throw UnimplementedError();
+
 }

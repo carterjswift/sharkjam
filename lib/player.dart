@@ -19,66 +19,68 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
+List<Song> songs = [
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+  Song(name: 'On the Run', duration: '3:35'),
+  Song(name: 'Dont You worry Child', duration: '3:23'),
+  Song(name: 'Window', duration: '4:45'),
+  Song(name: 'Summer', duration: '3:25'),
+  Song(name: 'Blah Blah Blah', duration: '4:52'),
+  Song(name: 'Hello World', duration: '5:43'),
+  Song(name: 'Ocean', duration: '7:34'),
+  Song(name: 'Wallet', duration: '4:32'),
+  Song(name: 'Minions', duration: '1:30'),
+  Song(name: 'I Dont Care', duration: '3:52'),
+  Song(name: 'Powder', duration: '7:11'),
+  Song(name: 'Remember', duration: '4:53'),
+  Song(name: 'Beautiful People', duration: '6:32'),
+  Song(name: 'The Grand Finale', duration: '4:42'),
+];
+
 class _PlayListState extends State<PlayListMainScreen> {
   //Create a stateful list for now
-  List<Song> songs = [
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-    Song(name: 'On the Run', duration: '3:35'),
-    Song(name: 'Dont You worry Child', duration: '3:23'),
-    Song(name: 'Window', duration: '4:45'),
-    Song(name: 'Summer', duration: '3:25'),
-    Song(name: 'Blah Blah Blah', duration: '4:52'),
-    Song(name: 'Hello World', duration: '5:43'),
-    Song(name: 'Ocean', duration: '7:34'),
-    Song(name: 'Wallet', duration: '4:32'),
-    Song(name: 'Minions', duration: '1:30'),
-    Song(name: 'I Dont Care', duration: '3:52'),
-    Song(name: 'Powder', duration: '7:11'),
-    Song(name: 'Remember', duration: '4:53'),
-    Song(name: 'Beautiful People', duration: '6:32'),
-    Song(name: 'The Grand Finale', duration: '4:42'),
-  ];
+  // Moved to above so it can be referenced in other classes.
 
   //Method that creates the row of the name of the song,
   //duration and bump-up button.
@@ -290,12 +292,6 @@ class DataSearch extends SearchDelegate<String> {
         child: ListView.builder(
           itemCount: ytResult.length,
           itemBuilder: (_, int index) => listItem(index),   // Not sure why but search result is not affected until second enter.
-          // GestureDetector(
-          //   onTap: () {
-          //     print('play the searched song');
-          //     // navigateToMusicControl();  // Not sure about the Gesture Detector close.
-          //   },
-          // ),
         ),
       ),
     );
@@ -320,19 +316,6 @@ class DataSearch extends SearchDelegate<String> {
               Image.network(
                 ytResult[index].thumbnail['default']['url'],
               ),
-              // GestureDetector(
-              //   child: Row(
-              //       children: <Widget> [
-              //         Image.network(
-              //           ytResult[index].thumbnail['default']['url'],
-              //         ),
-              //       ]
-              //   ),
-              //   onTap: () {
-              //     print('Add Song');
-              //     // navigateToMusicControl(context);
-              //   },
-              // ),
               Expanded(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -359,6 +342,9 @@ class DataSearch extends SearchDelegate<String> {
         ),
         onTap: () {
           print('Add Song');
+          Song song = new Song(name: ytResult[index].title, duration: ytResult[index].duration);
+          songs.add(song);
+          print(songs.elementAt(songs.length-1).songName);
           // navigateToMusicControl(context);
         },
       ),
