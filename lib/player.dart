@@ -44,6 +44,8 @@ List<Video> videoList = [
   Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
 ];
 
+Video currentVideo;
+
 class _PlayListState extends State<PlayListMainScreen> {
   //Create a stateful list for now
   // Moved to above so it can be referenced in other classes.
@@ -134,7 +136,7 @@ class _PlayListState extends State<PlayListMainScreen> {
 Future navigateToMusicControl(context, String id) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MusicControl()));
-  // TODO: Implement playing/retreiving music from ID.
+  // TODO: Implement playing/retrieving music from ID.
 }
 
 List<YT_API> ytResult = [];
@@ -306,7 +308,7 @@ class MusicControl extends StatefulWidget {
   @override
   _MusicControlState createState() => _MusicControlState();
 }
-
+// Original Music Control class.
 class _MusicControlState extends State<MusicControl> {
 
   YoutubePlayerController _controller;
