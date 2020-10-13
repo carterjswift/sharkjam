@@ -114,10 +114,10 @@ class _PlayListState extends State<PlayListMainScreen> {
               Padding(
                   child: GestureDetector(
                       onTap: () {
-                        print('+');
-                        navigateToSearchMusic(context);
+                        print('Add Music');
+                        showSearch(context: context, delegate: DataSearch());
                       },
-                      child: Icon(Icons.add)),
+                      child: Icon(Icons.search)),
                   padding: EdgeInsets.symmetric(horizontal: 16.0))
             ],
           ),
@@ -130,43 +130,11 @@ class _PlayListState extends State<PlayListMainScreen> {
   }
 }
 
-//Method that navigates from playlist screen to searchmusic screen
-Future navigateToSearchMusic(context) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => SearchMusic()));
-}
-
 //Method that navigates from playlist screen to musiccontrol screen
 Future navigateToMusicControl(context, String id) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MusicControl()));
   // TODO: Implement playing/retreiving music from ID.
-}
-
-//searchmusic screen
-class SearchMusic extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF261D1D),
-      appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: const Color(0xFF261D1D),
-          leading: BackButton(
-            color: Colors.white,
-          ),
-          title: Text("Add Music",
-              style: TextStyle(color: Colors.white, fontSize: 25.0)),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                })
-          ]),
-    );
-  }
 }
 
 List<YT_API> ytResult = [];
@@ -498,3 +466,37 @@ class _MusicControlState extends State<MusicControl> {
     );
   }
 }
+
+//Method that navigates from playlist screen to searchmusic screen
+// Future navigateToSearchMusic(context) async {
+//   Navigator.push(
+//       context, MaterialPageRoute(builder: (context) => SearchMusic()));
+// }
+
+
+
+// //searchmusic screen
+// class SearchMusic extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: const Color(0xFF261D1D),
+//       appBar: AppBar(
+//           elevation: 0.0,
+//           backgroundColor: const Color(0xFF261D1D),
+//           leading: BackButton(
+//             color: Colors.white,
+//           ),
+//           title: Text("Add Music",
+//               style: TextStyle(color: Colors.white, fontSize: 25.0)),
+//           centerTitle: true,
+//           actions: <Widget>[
+//             IconButton(
+//                 icon: Icon(Icons.search),
+//                 onPressed: () {
+//                   showSearch(context: context, delegate: DataSearch());
+//                 })
+//           ]),
+//     );
+//   }
+// }
