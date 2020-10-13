@@ -3,93 +3,13 @@ import 'package:youtube_api/youtube_api.dart';
 import 'song.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'api.dart';
-
 import 'dart:async';
-
-import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'video.dart';
+import 'database_provider.dart';
 
-void main() async {
-  // Avoid errors caused by flutter upgrade.
-  // Importing 'package:flutter/widgets.dart' is required.
-  WidgetsFlutterBinding.ensureInitialized();
-  // Open the database and store the reference.
-  final Future<Database> database = openDatabase(
-    // Set the path to the database. Note: Using the `join` function from the
-    // `path` package is best practice to ensure the path is correctly
-    // constructed for each platform.
-    join(await getDatabasesPath(), 'song_database.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        "CREATE TABLE songs (name TEXT, duration TEXT)",
-      );
-    },
-    version: 1,
-  );
-
-  // Define a function that inserts songs into the database
-  Future<void> insertSong(Song song) async {
-    // Get a reference to the database.
-    final Database db = await database;
-
-    // Insert the Song into the correct table. You might also specify the
-    // `conflictAlgorithm` to use in case the same song is inserted twice.
-    //
-    // In this case, replace any previous data.
-    await db.insert(
-      'songs',
-      song.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-// A method that retrieves all the songs from the songs table.
-  Future<List<Song>> songs() async {
-    // Get a reference to the database.
-    final Database db = await database;
-
-    // Query the table for all The Songs.
-    final List<Map<String, dynamic>> maps = await db.query('songs');
-
-    // Convert the List<Map<String, dynamic> into a List<Song>.
-    return List.generate(maps.length, (i) {
-      return Song(
-        //id: maps[i]['id'],
-        name: maps[i]['name'],
-        duration: maps[i]['duration'],
-      );
-    });
-  }
-
-  Future<void> updateSong(Song song) async {
-    // Get a reference to the database.
-    final db = await database;
-
-    // Update the given Song.
-    await db.update(
-      'songs',
-      song.toMap(),
-      // Ensure that the Dog has a matching id.
-      where: "id = ?",
-      // Pass the Song's name as a whereArg to prevent SQL injection.
-      whereArgs: [song.name],
-    );
-  }
-
-  Future<void> deleteSong(String name) async {
-    // Get a reference to the database.
-    final db = await database;
-
-    // Remove the Song from the Database.
-    await db.delete(
-      'songs',
-      // Use a `where` clause to delete a specific dog.
-      where: "id = ?",
-      // Pass the Song's name as a whereArg to prevent SQL injection.
-      whereArgs: [name],
-    );
-  }
-
+void main() {
   runApp(MaterialApp(
     home: PlayListMainScreen(),
   ));
@@ -104,64 +24,66 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
-List<Song> songs = [
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
-];
+List<Video> videos = DatabaseProvider.db.getAllVideos();
+
+Video currentVideo;
+
+// Song(name: 'On the Run', duration: '3:35'),
+// Song(name: 'Dont You worry Child', duration: '3:23'),
+// Song(name: 'Window', duration: '4:45'),
+// Song(name: 'Summer', duration: '3:25'),
+// Song(name: 'Blah Blah Blah', duration: '4:52'),
+// Song(name: 'Hello World', duration: '5:43'),
+// Song(name: 'Ocean', duration: '7:34'),
+// Song(name: 'Wallet', duration: '4:32'),
+// Song(name: 'Minions', duration: '1:30'),
+// Song(name: 'I Dont Care', duration: '3:52'),
+// Song(name: 'Powder', duration: '7:11'),
+// Song(name: 'Remember', duration: '4:53'),
+// Song(name: 'Beautiful People', duration: '6:32'),
+// Song(name: 'The Grand Finale', duration: '4:42'),
+// Song(name: 'On the Run', duration: '3:35'),
+// Song(name: 'Dont You worry Child', duration: '3:23'),
+// Song(name: 'Window', duration: '4:45'),
+// Song(name: 'Summer', duration: '3:25'),
+// Song(name: 'Blah Blah Blah', duration: '4:52'),
+// Song(name: 'Hello World', duration: '5:43'),
+// Song(name: 'Ocean', duration: '7:34'),
+// Song(name: 'Wallet', duration: '4:32'),
+// Song(name: 'Minions', duration: '1:30'),
+// Song(name: 'I Dont Care', duration: '3:52'),
+// Song(name: 'Powder', duration: '7:11'),
+// Song(name: 'Remember', duration: '4:53'),
+// Song(name: 'Beautiful People', duration: '6:32'),
+// Song(name: 'The Grand Finale', duration: '4:42'),
+// Song(name: 'On the Run', duration: '3:35'),
+// Song(name: 'Dont You worry Child', duration: '3:23'),
+// Song(name: 'Window', duration: '4:45'),
+// Song(name: 'Summer', duration: '3:25'),
+// Song(name: 'Blah Blah Blah', duration: '4:52'),
+// Song(name: 'Hello World', duration: '5:43'),
+// Song(name: 'Ocean', duration: '7:34'),
+// Song(name: 'Wallet', duration: '4:32'),
+// Song(name: 'Minions', duration: '1:30'),
+// Song(name: 'I Dont Care', duration: '3:52'),
+// Song(name: 'Powder', duration: '7:11'),
+// Song(name: 'Remember', duration: '4:53'),
+// Song(name: 'Beautiful People', duration: '6:32'),
+// Song(name: 'The Grand Finale', duration: '4:42'),
+// Song(name: 'On the Run', duration: '3:35'),
+// Song(name: 'Dont You worry Child', duration: '3:23'),
+// Song(name: 'Window', duration: '4:45'),
+// Song(name: 'Summer', duration: '3:25'),
+// Song(name: 'Blah Blah Blah', duration: '4:52'),
+// Song(name: 'Hello World', duration: '5:43'),
+// Song(name: 'Ocean', duration: '7:34'),
+// Song(name: 'Wallet', duration: '4:32'),
+// Song(name: 'Minions', duration: '1:30'),
+// Song(name: 'I Dont Care', duration: '3:52'),
+// Song(name: 'Powder', duration: '7:11'),
+// Song(name: 'Remember', duration: '4:53'),
+// Song(name: 'Beautiful People', duration: '6:32'),
+// Song(name: 'The Grand Finale', duration: '4:42'),
 
 class _PlayListState extends State<PlayListMainScreen> {
   //Create a stateful list for now
@@ -169,7 +91,7 @@ class _PlayListState extends State<PlayListMainScreen> {
 
   //Method that creates the row of the name of the song,
   //duration and bump-up button.
-  Widget songInfo(song) {
+  Widget VideoInfo(song) {
     Song songLocal = new Song();
     songLocal = song;
 
@@ -253,7 +175,7 @@ class _PlayListState extends State<PlayListMainScreen> {
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
-          children: songs.map((song) => songInfo(song)).toList(),
+          children: videos.map((song) => VideoInfo(song)).toList(),
         )));
   }
 }
@@ -296,19 +218,19 @@ Future navigateToMusicControl(context) async {
 //   }
 // }
 
-class Video {
-  String title;
-  String id;
-  String channel;
-  String url;
+// class Video {
+//   String title;
+//   String id;
+//   String channel;
+//   String url;
 
-  Video(
-    this.title,
-    this.id,
-    this.channel,
-    this.url,
-  );
-}
+//   Video(
+//     this.title,
+//     this.id,
+//     this.channel,
+//     this.url,
+//   );
+// }
 
 List<YT_API> ytResult = [];
 List<Video> results = [];
@@ -407,10 +329,11 @@ class DataSearch extends SearchDelegate<String> {
           padding: EdgeInsets.all(12.0),
           child: Row(
             children: <Widget>[
-              Padding(padding: EdgeInsets.only(right: 20.0)),
+              Padding(padding: EdgeInsets.only(right: 15.0)),
               Image.network(
                 ytResult[index].thumbnail['default']['url'],
               ),
+              Padding(padding: EdgeInsets.all(8)),
               Expanded(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -427,11 +350,23 @@ class DataSearch extends SearchDelegate<String> {
                       softWrap: true,
                     ),
                     Padding(padding: EdgeInsets.only(bottom: 3.0)),
-                    Text(
-                      ytResult[index].url,
-                      softWrap: true,
-                    ),
-                  ]))
+                    // Text(
+                    //   ytResult[index].url,
+                    //   softWrap: true,
+                    // ),
+                  ])),
+              Padding(padding: EdgeInsets.all(5)),
+              GestureDetector(
+                  child: Icon(Icons.add),
+                  onTap: () {
+                    // DatabaseProvider.db.newVideo(
+                    //    new Video(
+                    //     ytResult[index].description,
+                    //     ytResult[index].channelId,
+                    //     ytResult[index].channelTitle,
+                    //     ytResult[index].channelurl)
+                    // ),
+                  })
             ],
           ),
         ),
