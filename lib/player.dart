@@ -226,31 +226,30 @@ class _PlayListState extends State<PlayListMainScreen> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: AppBar(
-            //leading: Icon(Icons.arrow_back),
-            title: Text(
-              'your playlist',
-            ),
-            backgroundColor: Color(0xFF261D1D),
-            centerTitle: true,
-            actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                })
-            ]),
-            // actions: <Widget>[
-            //   Padding(
-            //       child: GestureDetector(
-            //           onTap: () {
-            //             print('+');
-            //             natigateToSearchMusic(context);
-            //           },
-            //           child: Icon(Icons.add)),
-            //       padding: EdgeInsets.symmetric(horizontal: 16.0))
-            // ],
-          ),
-        
+              //leading: Icon(Icons.arrow_back),
+              title: Text(
+                'your playlist',
+              ),
+              backgroundColor: Color(0xFF261D1D),
+              centerTitle: true,
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(context: context, delegate: DataSearch());
+                    })
+              ]),
+          // actions: <Widget>[
+          //   Padding(
+          //       child: GestureDetector(
+          //           onTap: () {
+          //             print('+');
+          //             natigateToSearchMusic(context);
+          //           },
+          //           child: Icon(Icons.add)),
+          //       padding: EdgeInsets.symmetric(horizontal: 16.0))
+          // ],
+        ),
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
@@ -272,30 +271,30 @@ Future navigateToMusicControl(context) async {
 }
 
 //searchmusic screen
-class SearchMusic extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF261D1D),
-      appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: const Color(0xFF261D1D),
-          leading: BackButton(
-            color: Colors.white,
-          ),
-          title: Text("Add Music",
-              style: TextStyle(color: Colors.white, fontSize: 25.0)),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                })
-          ]),
-    );
-  }
-}
+// class SearchMusic extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: const Color(0xFF261D1D),
+//       appBar: AppBar(
+//           elevation: 0.0,
+//           backgroundColor: const Color(0xFF261D1D),
+//           leading: BackButton(
+//             color: Colors.white,
+//           ),
+//           title: Text("Add Music",
+//               style: TextStyle(color: Colors.white, fontSize: 25.0)),
+//           centerTitle: true,
+//           actions: <Widget>[
+//             IconButton(
+//                 icon: Icon(Icons.search),
+//                 onPressed: () {
+//                   showSearch(context: context, delegate: DataSearch());
+//                 })
+//           ]),
+//     );
+//   }
+// }
 
 class Video {
   String title;
@@ -304,28 +303,29 @@ class Video {
   String url;
 
   Video(
-      this.title,
-      this.id,
-      this.channel,
-      this.url,
-      );
+    this.title,
+    this.id,
+    this.channel,
+    this.url,
+  );
 }
+
 List<YT_API> ytResult = [];
 List<Video> results = [];
 Future<List<Video>> search(String q, YoutubeAPI api) async {
-
-  ytResult = await api.search(q);   // Perhaps this is taking too long?
+  ytResult = await api.search(q); // Perhaps this is taking too long?
 
   ytResult.forEach((YT_API vid) {
     // print(vid.title);             // Test
-    results.add(new Video(        // Add video data to results[]
+    results.add(new Video(
+      // Add video data to results[]
       vid.title,
       vid.id,
       vid.channelTitle,
       vid.url,
     ));
   });
-  print("ytResult length is " + ytResult.length.toString());  // Test
+  print("ytResult length is " + ytResult.length.toString()); // Test
   return results;
 }
 
@@ -372,9 +372,11 @@ class DataSearch extends SearchDelegate<String> {
     // TODO: implement buildResults
     // Future<List<Video>> results = search(query, ytApi);
     search(query, ytApi);
-    print("Submission successfully returned buildResults");   // Should be printed everytime query is entered.
+    print(
+        "Submission successfully returned buildResults"); // Should be printed everytime query is entered.
     ytResult.forEach((YT_API vid) {
-      print(vid.title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
+      print(vid
+          .title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
     });
     return Scaffold(
       // appBar: AppBar(
@@ -383,7 +385,8 @@ class DataSearch extends SearchDelegate<String> {
       body: Container(
         child: ListView.builder(
           itemCount: ytResult.length,
-          itemBuilder: (_, int index) => listItem(index),   // Not sure why but search result is not affected until second enter.
+          itemBuilder: (_, int index) => listItem(
+              index), // Not sure why but search result is not affected until second enter.
         ),
       ),
     );
@@ -413,30 +416,31 @@ class DataSearch extends SearchDelegate<String> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          ytResult[index].title,
-                          softWrap: true,
-                          style: TextStyle(fontSize: 18.0),
-                        ),
-                        Padding(padding: EdgeInsets.only(bottom: 1.5)),
-                        Text(
-                          ytResult[index].channelTitle,
-                          softWrap: true,
-                        ),
-                        Padding(padding: EdgeInsets.only(bottom: 3.0)),
-                        Text(
-                          ytResult[index].url,
-                          softWrap: true,
-                        ),
-                      ]))
+                    Text(
+                      ytResult[index].title,
+                      softWrap: true,
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                    Padding(padding: EdgeInsets.only(bottom: 1.5)),
+                    Text(
+                      ytResult[index].channelTitle,
+                      softWrap: true,
+                    ),
+                    Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                    Text(
+                      ytResult[index].url,
+                      softWrap: true,
+                    ),
+                  ]))
             ],
           ),
         ),
         onTap: () {
           print('Add Song');
-          Song song = new Song(name: ytResult[index].title, duration: ytResult[index].duration);
+          Song song = new Song(
+              name: ytResult[index].title, duration: ytResult[index].duration);
           songs.add(song);
-          print(songs.elementAt(songs.length-1).songName);
+          print(songs.elementAt(songs.length - 1).songName);
           // navigateToMusicControl(context);
         },
       ),
@@ -445,28 +449,29 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty ? recentMusic : music.where((p) => p.startsWith(query)).toList();
+    final suggestionList = query.isEmpty
+        ? recentMusic
+        : music.where((p) => p.startsWith(query)).toList();
     // search(query, ytApi);       // If this doesn't work, I don't know what else would.
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-          onTap: (){
-            showResults(context);
-          },
-
-          leading: Icon(Icons.music_note),
-          title: RichText(text: TextSpan(
-            text: suggestionList[index].substring(0, query.length),
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            children: [
-              TextSpan(
-                text: suggestionList[index].substring(query.length),
-                style: TextStyle(color: Colors.grey)
-              )
-            ]
-          ),
+        onTap: () {
+          showResults(context);
+        },
+        leading: Icon(Icons.music_note),
+        title: RichText(
+          text: TextSpan(
+              text: suggestionList[index].substring(0, query.length),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              children: [
+                TextSpan(
+                    text: suggestionList[index].substring(query.length),
+                    style: TextStyle(color: Colors.grey))
+              ]),
         ),
       ),
-    itemCount: suggestionList.length,
+      itemCount: suggestionList.length,
     );
   }
 }
