@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_api/youtube_api.dart';
-import 'song.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'api.dart';
 import 'dart:async';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
 import 'video.dart';
 import 'database_provider.dart';
 
@@ -24,122 +20,10 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
-List<Video> videos = DatabaseProvider.db.getAllVideos();
-
 Video currentVideo;
 
-// Song(name: 'On the Run', duration: '3:35'),
-// Song(name: 'Dont You worry Child', duration: '3:23'),
-// Song(name: 'Window', duration: '4:45'),
-// Song(name: 'Summer', duration: '3:25'),
-// Song(name: 'Blah Blah Blah', duration: '4:52'),
-// Song(name: 'Hello World', duration: '5:43'),
-// Song(name: 'Ocean', duration: '7:34'),
-// Song(name: 'Wallet', duration: '4:32'),
-// Song(name: 'Minions', duration: '1:30'),
-// Song(name: 'I Dont Care', duration: '3:52'),
-// Song(name: 'Powder', duration: '7:11'),
-// Song(name: 'Remember', duration: '4:53'),
-// Song(name: 'Beautiful People', duration: '6:32'),
-// Song(name: 'The Grand Finale', duration: '4:42'),
-// Song(name: 'On the Run', duration: '3:35'),
-// Song(name: 'Dont You worry Child', duration: '3:23'),
-// Song(name: 'Window', duration: '4:45'),
-// Song(name: 'Summer', duration: '3:25'),
-// Song(name: 'Blah Blah Blah', duration: '4:52'),
-// Song(name: 'Hello World', duration: '5:43'),
-// Song(name: 'Ocean', duration: '7:34'),
-// Song(name: 'Wallet', duration: '4:32'),
-// Song(name: 'Minions', duration: '1:30'),
-// Song(name: 'I Dont Care', duration: '3:52'),
-// Song(name: 'Powder', duration: '7:11'),
-// Song(name: 'Remember', duration: '4:53'),
-// Song(name: 'Beautiful People', duration: '6:32'),
-// Song(name: 'The Grand Finale', duration: '4:42'),
-// Song(name: 'On the Run', duration: '3:35'),
-// Song(name: 'Dont You worry Child', duration: '3:23'),
-// Song(name: 'Window', duration: '4:45'),
-// Song(name: 'Summer', duration: '3:25'),
-// Song(name: 'Blah Blah Blah', duration: '4:52'),
-// Song(name: 'Hello World', duration: '5:43'),
-// Song(name: 'Ocean', duration: '7:34'),
-// Song(name: 'Wallet', duration: '4:32'),
-// Song(name: 'Minions', duration: '1:30'),
-// Song(name: 'I Dont Care', duration: '3:52'),
-// Song(name: 'Powder', duration: '7:11'),
-// Song(name: 'Remember', duration: '4:53'),
-// Song(name: 'Beautiful People', duration: '6:32'),
-// Song(name: 'The Grand Finale', duration: '4:42'),
-// Song(name: 'On the Run', duration: '3:35'),
-// Song(name: 'Dont You worry Child', duration: '3:23'),
-// Song(name: 'Window', duration: '4:45'),
-// Song(name: 'Summer', duration: '3:25'),
-// Song(name: 'Blah Blah Blah', duration: '4:52'),
-// Song(name: 'Hello World', duration: '5:43'),
-// Song(name: 'Ocean', duration: '7:34'),
-// Song(name: 'Wallet', duration: '4:32'),
-// Song(name: 'Minions', duration: '1:30'),
-// Song(name: 'I Dont Care', duration: '3:52'),
-// Song(name: 'Powder', duration: '7:11'),
-// Song(name: 'Remember', duration: '4:53'),
-// Song(name: 'Beautiful People', duration: '6:32'),
-// Song(name: 'The Grand Finale', duration: '4:42'),
-
 class _PlayListState extends State<PlayListMainScreen> {
-  //Create a stateful list for now
-  // Moved to above so it can be referenced in other classes.
-
-  //Method that creates the row of the name of the song,
-  //duration and bump-up button.
-  Widget VideoInfo(song) {
-    Song songLocal = new Song();
-    songLocal = song;
-
-    return Card(
-      color: Color(0xFF261D1D),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-          GestureDetector(
-            child: Container(
-              child: Align(
-                child: Text(songLocal.name,
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-                alignment: Alignment.centerLeft,
-              ),
-              width: 320,
-              height: 50,
-            ),
-            onTap: () {
-              print('play the song');
-              navigateToMusicControl(context);
-            },
-          ),
-          Container(
-            child: Text(songLocal.duration,
-                style: TextStyle(
-                  color: Colors.white,
-                )),
-          ),
-          Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-          GestureDetector(
-            child: Icon(
-              Icons.arrow_drop_up,
-              color: Colors.white,
-            ),
-            onTap: () {
-              print('bump-up');
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
+  
   //playlist screen
   @override
   Widget build(BuildContext context) {
@@ -161,30 +45,28 @@ class _PlayListState extends State<PlayListMainScreen> {
                       showSearch(context: context, delegate: DataSearch());
                     })
               ]),
-          // actions: <Widget>[
-          //   Padding(
-          //       child: GestureDetector(
-          //           onTap: () {
-          //             print('+');
-          //             natigateToSearchMusic(context);
-          //           },
-          //           child: Icon(Icons.add)),
-          //       padding: EdgeInsets.symmetric(horizontal: 16.0))
-          // ],
         ),
-        body: Scrollbar(
-            child: ListView(
-          scrollDirection: Axis.vertical,
-          children: videos.map((song) => VideoInfo(song)).toList(),
-        )));
+        body: FutureBuilder<List<Video>>(
+            future: DatabaseProvider.db.getAllVideos(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Video>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Video item = snapshot.data[index];
+                    return ListTile(
+                      title: Text(item.title),
+                      leading: Text(item.duration.toString()),
+                    );
+                  },
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            }));
   }
 }
-
-//Method that navigates from playlist screen to searchmusic screen
-// Future navigateToSearchMusic(context) async {
-//   Navigator.push(
-//       context, MaterialPageRoute(builder: (context) => SearchMusic()));
-// }
 
 //Method that navigates from playlist screen to musiccontrol screen
 Future navigateToMusicControl(context) async {
@@ -192,45 +74,17 @@ Future navigateToMusicControl(context) async {
       context, MaterialPageRoute(builder: (context) => MusicControl()));
 }
 
-//searchmusic screen
-// class SearchMusic extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: const Color(0xFF261D1D),
-//       appBar: AppBar(
-//           elevation: 0.0,
-//           backgroundColor: const Color(0xFF261D1D),
-//           leading: BackButton(
-//             color: Colors.white,
-//           ),
-//           title: Text("Add Music",
-//               style: TextStyle(color: Colors.white, fontSize: 25.0)),
-//           centerTitle: true,
-//           actions: <Widget>[
-//             IconButton(
-//                 icon: Icon(Icons.search),
-//                 onPressed: () {
-//                   showSearch(context: context, delegate: DataSearch());
-//                 })
-//           ]),
-//     );
-//   }
-// }
 
-// class Video {
-//   String title;
-//   String id;
-//   String channel;
-//   String url;
 
-//   Video(
-//     this.title,
-//     this.id,
-//     this.channel,
-//     this.url,
-//   );
-// }
+
+
+
+
+
+
+
+
+
 
 List<YT_API> ytResult = [];
 List<Video> results = [];
@@ -241,10 +95,10 @@ Future<List<Video>> search(String q, YoutubeAPI api) async {
     // print(vid.title);             // Test
     results.add(new Video(
       // Add video data to results[]
-      vid.title,
-      vid.id,
-      vid.channelTitle,
-      vid.url,
+      title: vid.title,
+      channel: vid.channelTitle,
+      id: vid.id,
+      duration: vid.duration,
     ));
   });
   print("ytResult length is " + ytResult.length.toString()); // Test
@@ -359,23 +213,21 @@ class DataSearch extends SearchDelegate<String> {
               GestureDetector(
                   child: Icon(Icons.add),
                   onTap: () {
-                    // DatabaseProvider.db.newVideo(
-                    //    new Video(
-                    //     ytResult[index].description,
-                    //     ytResult[index].channelId,
-                    //     ytResult[index].channelTitle,
-                    //     ytResult[index].channelurl)
-                    // ),
+                    DatabaseProvider.db.newVideo(new Video(
+                        title: ytResult[index].description,
+                        id: ytResult[index].channelId,
+                        channel: ytResult[index].channelTitle,
+                        duration: ytResult[index].duration));
                   })
             ],
           ),
         ),
         onTap: () {
           print('Add Song');
-          Song song = new Song(
-              name: ytResult[index].title, duration: ytResult[index].duration);
-          songs.add(song);
-          print(songs.elementAt(songs.length - 1).songName);
+          Video video = new Video(
+              title: ytResult[index].title, duration: ytResult[index].duration);
+          //videos.add(video);
+          //print(videos.elementAt(videos.length - 1).title);
           // navigateToMusicControl(context);
         },
       ),
@@ -411,6 +263,20 @@ class DataSearch extends SearchDelegate<String> {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //musiccontrol screen
 class MusicControl extends StatefulWidget {
   @override
@@ -419,9 +285,9 @@ class MusicControl extends StatefulWidget {
 
 class _MusicControlState extends State<MusicControl> {
   List<Video> songs = [
-    Video("maple leaf rag", "ZYqy7pBqbw4", "Scott Joplin", ""),
-    Video("Medallo City", "XKjpVgpXoLI", "Maluma", ""),
-    Video("Bohemian Rhapsody", "fJ9rUzIMcZQ", "Queen", ""),
+    // Video("maple leaf rag", "ZYqy7pBqbw4", "Scott Joplin", ""),
+    // Video("Medallo City", "XKjpVgpXoLI", "Maluma", ""),
+    // Video("Bohemian Rhapsody", "fJ9rUzIMcZQ", "Queen", ""),
   ];
   YoutubePlayerController _controller;
   YoutubePlayer _player;
