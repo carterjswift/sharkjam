@@ -4,10 +4,14 @@ class Video {
   String channel;
   String duration;
 
-  Video({this.title, this.id, this.duration});
+  Video({this.title, this.channel, this.id, this.duration});
 
   String get videoTitle {
     return title;
+  }
+
+  String get videoChannel {
+    return channel;
   }
 
   String get videoID {
@@ -20,6 +24,10 @@ class Video {
 
   set videoTitle(String title) {
     this.title = title;
+  }
+
+  set videoChannel(String channel) {
+    this.channel = channel;
   }
 
   set videoID(String id) {

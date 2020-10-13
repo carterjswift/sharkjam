@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_api/youtube_api.dart';
-import 'song.dart';
+import 'Video.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'api.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -19,63 +18,27 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
-List<Song> songs = [
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
-  Song(name: 'On the Run', duration: '3:35'),
-  Song(name: 'Dont You worry Child', duration: '3:23'),
-  Song(name: 'Window', duration: '4:45'),
-  Song(name: 'Summer', duration: '3:25'),
-  Song(name: 'Blah Blah Blah', duration: '4:52'),
-  Song(name: 'Hello World', duration: '5:43'),
-  Song(name: 'Ocean', duration: '7:34'),
-  Song(name: 'Wallet', duration: '4:32'),
-  Song(name: 'Minions', duration: '1:30'),
-  Song(name: 'I Dont Care', duration: '3:52'),
-  Song(name: 'Powder', duration: '7:11'),
-  Song(name: 'Remember', duration: '4:53'),
-  Song(name: 'Beautiful People', duration: '6:32'),
-  Song(name: 'The Grand Finale', duration: '4:42'),
+List<Video> videosList = [
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
 ];
 
 class _PlayListState extends State<PlayListMainScreen> {
@@ -84,9 +47,9 @@ class _PlayListState extends State<PlayListMainScreen> {
 
   //Method that creates the row of the name of the song,
   //duration and bump-up button.
-  Widget songInfo(song) {
-    Song songLocal = new Song();
-    songLocal = song;
+  Widget videoInfo(song) {
+    Video videoLocal = new Video();
+    videoLocal = song;
 
     return Card(
       color: const Color(0xFF261D1D),
@@ -98,7 +61,7 @@ class _PlayListState extends State<PlayListMainScreen> {
           GestureDetector(
             child: Container(
               child: Align(
-                child: Text(songLocal.name,
+                child: Text(videoLocal.title,
                     style: TextStyle(
                       color: Colors.white,
                     )),
@@ -109,11 +72,11 @@ class _PlayListState extends State<PlayListMainScreen> {
             ),
             onTap: () {
               print('play the song');
-              navigateToMusicControl(context, id);
+              navigateToMusicControl(context, videoLocal.id);
             },
           ),
           Container(
-            child: Text(songLocal.duration,
+            child: Text(videoLocal.duration,
                 style: TextStyle(
                   color: Colors.white,
                 )),
@@ -162,7 +125,7 @@ class _PlayListState extends State<PlayListMainScreen> {
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
-          children: songs.map((song) => songInfo(song)).toList(),
+          children: videosList.map((video) => videoInfo(video)).toList(),
         )));
   }
 }
@@ -206,19 +169,6 @@ class SearchMusic extends StatelessWidget {
   }
 }
 
-class Video {
-  String title;
-  String id;
-  String channel;
-  String url;
-
-  Video(
-      this.title,
-      this.id,
-      this.channel,
-      this.url,
-      );
-}
 List<YT_API> ytResult = [];
 List<Video> results = [];
 Future<List<Video>> search(String q, YoutubeAPI api) async {
@@ -228,10 +178,10 @@ Future<List<Video>> search(String q, YoutubeAPI api) async {
   ytResult.forEach((YT_API vid) {
     // print(vid.title);             // Test
     results.add(new Video(        // Add video data to results[]
-      vid.title,
-      vid.id,
-      vid.channelTitle,
-      vid.url,
+      title: vid.title,
+      channel: vid.channelTitle,
+      id: vid.id,
+      duration: vid.duration,
     ));
   });
   print("ytResult length is " + ytResult.length.toString());  // Test
@@ -344,9 +294,9 @@ class DataSearch extends SearchDelegate<String> {
         ),
         onTap: () {
           print('Add Song');
-          Song song = new Song(name: ytResult[index].title, duration: ytResult[index].duration);
-          songs.add(song);
-          print(songs.elementAt(songs.length-1).songName);
+          Video video = new Video(title: ytResult[index].title, channel: ytResult[index].channelTitle, id: ytResult[index].id, duration: ytResult[index].duration);
+          videosList.add(video);
+          print(videosList.elementAt(videosList.length-1).title);
 
           String vidID = ytResult[index].id;
           navigateToMusicControl(context, vidID);
@@ -390,11 +340,12 @@ class MusicControl extends StatefulWidget {
 }
 
 class _MusicControlState extends State<MusicControl> {
-  List<Video> songs = [
-    Video("maple leaf rag", "ZYqy7pBqbw4", "Scott Joplin", ""),
-    Video("Medallo City", "XKjpVgpXoLI", "Maluma", ""),
-    Video("Bohemian Rhapsody", "fJ9rUzIMcZQ", "Queen", ""),
+  List<Video> videosList = [
+    Video(title: "maple leaf rag", channel: "Jazz VEVO", id: "ZYqy7pBqbw4", duration: "3:44"),
+    Video(title: "Medallo City", channel: "Classic VEVO", id: "XKjpVgpXoLI", duration: "5:44"),
+    Video(title: "Bohemian Rhapsody", channel: "Rock VEVO", id: "fJ9rUzIMcZQ", duration: "2:44"),
   ];
+
   YoutubePlayerController _controller;
   YoutubePlayer _player;
   YoutubePlayerFlags flags = YoutubePlayerFlags(autoPlay: false);
@@ -414,14 +365,14 @@ class _MusicControlState extends State<MusicControl> {
 
   void playNewSong(int songIndex) {
     setState(() {
-      if (songIndex >= songs.length) {
+      if (songIndex >= videosList.length) {
         songIndex = 0;
       } else if (songIndex < 0) {
-        songIndex = songs.length - 1;
+        songIndex = videosList.length - 1;
       }
       currentSongIndex = songIndex;
       print(currentSongIndex);
-      _controller.cue(songs[currentSongIndex].id);
+      _controller.cue(videosList[currentSongIndex].id);
     });
 
     if (isPlaying) {
@@ -445,7 +396,7 @@ class _MusicControlState extends State<MusicControl> {
 
   _MusicControlState() {
     _controller = YoutubePlayerController(
-      initialVideoId: songs[currentSongIndex].id,
+      initialVideoId: videosList[currentSongIndex].id,
       flags: flags,
     );
     _player = YoutubePlayer(
@@ -478,11 +429,11 @@ class _MusicControlState extends State<MusicControl> {
             padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
             child: Image(
                 image: NetworkImage(YoutubePlayer.getThumbnail(
-                    videoId: songs[currentSongIndex].id))),
+                    videoId: videosList[currentSongIndex].id))),
           ),
           Container(
               child: Text(
-                  songs[currentSongIndex]
+                  videosList[currentSongIndex]
                       .title, // Will be replaced with music title.
                   style: TextStyle(
                     color: Colors.white,
@@ -491,7 +442,7 @@ class _MusicControlState extends State<MusicControl> {
                   ))),
           Container(
               child: Text(
-                  songs[currentSongIndex]
+                  videosList[currentSongIndex]
                       .channel, // Will be replaced with music artist.
                   style: TextStyle(
                     color: Colors.white,
