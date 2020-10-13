@@ -109,7 +109,7 @@ class _PlayListState extends State<PlayListMainScreen> {
             ),
             onTap: () {
               print('play the song');
-              navigateToMusicControl(context);
+              navigateToMusicControl(context, id);
             },
           ),
           Container(
@@ -174,9 +174,10 @@ Future navigateToSearchMusic(context) async {
 }
 
 //Method that navigates from playlist screen to musiccontrol screen
-Future navigateToMusicControl(context) async {
+Future navigateToMusicControl(context, String id) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MusicControl()));
+  // TODO: Implement playing/retreiving music from ID.
 }
 
 //searchmusic screen
@@ -288,10 +289,11 @@ class DataSearch extends SearchDelegate<String> {
       // appBar: AppBar(
       //   title: Text('Youtube API'),
       // ),
+      backgroundColor: const Color(0xFF261D1D),
       body: Container(
         child: ListView.builder(
           itemCount: ytResult.length,
-          itemBuilder: (_, int index) => listItem(index),   // Not sure why but search result is not affected until second enter.
+          itemBuilder: (_, int index) => listItem(index, context),   // Not sure why but search result is not affected until second enter.
         ),
       ),
     );
@@ -303,14 +305,16 @@ class DataSearch extends SearchDelegate<String> {
   ///
   /// Code copied from youtube_api page.
   ///
-  Widget listItem(index) {
+  Widget listItem(index, context) {
     print("code run has reached listItem");
     return Card(
+      color: const Color(0xFF261D1D),
       child: GestureDetector(
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 7.0),
           padding: EdgeInsets.all(12.0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Padding(padding: EdgeInsets.only(right: 20.0)),
               Image.network(
@@ -324,19 +328,17 @@ class DataSearch extends SearchDelegate<String> {
                         Text(
                           ytResult[index].title,
                           softWrap: true,
-                          style: TextStyle(fontSize: 18.0),
+                          style: TextStyle(color: Colors.white, fontSize: 18.0),
                         ),
                         Padding(padding: EdgeInsets.only(bottom: 1.5)),
                         Text(
                           ytResult[index].channelTitle,
                           softWrap: true,
+                          style: TextStyle(color: Colors.white),
                         ),
-                        Padding(padding: EdgeInsets.only(bottom: 3.0)),
-                        Text(
-                          ytResult[index].url,
-                          softWrap: true,
-                        ),
-                      ]))
+                        // Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                      ])),
+              // Add Button/ Check
             ],
           ),
         ),
@@ -345,8 +347,10 @@ class DataSearch extends SearchDelegate<String> {
           Song song = new Song(name: ytResult[index].title, duration: ytResult[index].duration);
           songs.add(song);
           print(songs.elementAt(songs.length-1).songName);
-          // navigateToMusicControl(context);
-        },
+
+          String vidID = ytResult[index].id;
+          navigateToMusicControl(context, vidID);
+          },
       ),
     );
   }

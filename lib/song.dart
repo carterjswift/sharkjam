@@ -1,4 +1,4 @@
-class Song extends Iterable<Song> {
+class Song {
   String name;
   String duration; // String type for now
 
@@ -19,9 +19,4 @@ class Song extends Iterable<Song> {
   set songDuration(String duration) {
     this.songDuration = duration;
   }
-
-  @override
-  // TODO: implement iterator
-  Iterator<Song> get iterator => throw UnimplementedError();
-
 }
