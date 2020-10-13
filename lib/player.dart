@@ -18,7 +18,10 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
-List<Video> videosList = [
+List<Video> videoList = [
+  Video(title: "maple leaf rag", channel: "Jazz VEVO", id: "ZYqy7pBqbw4", duration: "3:44"),
+  Video(title: "Medallo City", channel: "Classic VEVO", id: "XKjpVgpXoLI", duration: "5:44"),
+  Video(title: "Bohemian Rhapsody", channel: "Rock VEVO", id: "fJ9rUzIMcZQ", duration: "2:44"),
   Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
   Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
   Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
@@ -125,7 +128,7 @@ class _PlayListState extends State<PlayListMainScreen> {
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
-          children: videosList.map((video) => videoInfo(video)).toList(),
+          children: videoList.map((video) => videoInfo(video)).toList(),
         )));
   }
 }
@@ -263,8 +266,8 @@ class DataSearch extends SearchDelegate<String> {
         onTap: () {
           print('Add Song');
           Video video = new Video(title: ytResult[index].title, channel: ytResult[index].channelTitle, id: ytResult[index].id, duration: ytResult[index].duration);
-          videosList.add(video);
-          print(videosList.elementAt(videosList.length-1).title);
+          videoList.add(video);
+          print(videoList.elementAt(videoList.length-1).title);
 
           String vidID = ytResult[index].id;
           navigateToMusicControl(context, vidID);
@@ -308,11 +311,6 @@ class MusicControl extends StatefulWidget {
 }
 
 class _MusicControlState extends State<MusicControl> {
-  List<Video> videosList = [
-    Video(title: "maple leaf rag", channel: "Jazz VEVO", id: "ZYqy7pBqbw4", duration: "3:44"),
-    Video(title: "Medallo City", channel: "Classic VEVO", id: "XKjpVgpXoLI", duration: "5:44"),
-    Video(title: "Bohemian Rhapsody", channel: "Rock VEVO", id: "fJ9rUzIMcZQ", duration: "2:44"),
-  ];
 
   YoutubePlayerController _controller;
   YoutubePlayer _player;
@@ -333,14 +331,14 @@ class _MusicControlState extends State<MusicControl> {
 
   void playNewSong(int songIndex) {
     setState(() {
-      if (songIndex >= videosList.length) {
+      if (songIndex >= videoList.length) {
         songIndex = 0;
       } else if (songIndex < 0) {
-        songIndex = videosList.length - 1;
+        songIndex = videoList.length - 1;
       }
       currentSongIndex = songIndex;
       print(currentSongIndex);
-      _controller.cue(videosList[currentSongIndex].id);
+      _controller.cue(videoList[currentSongIndex].id);
     });
 
     if (isPlaying) {
@@ -364,7 +362,7 @@ class _MusicControlState extends State<MusicControl> {
 
   _MusicControlState() {
     _controller = YoutubePlayerController(
-      initialVideoId: videosList[currentSongIndex].id,
+      initialVideoId: videoList[currentSongIndex].id,
       flags: flags,
     );
     _player = YoutubePlayer(
@@ -397,11 +395,11 @@ class _MusicControlState extends State<MusicControl> {
             padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 20.0),
             child: Image(
                 image: NetworkImage(YoutubePlayer.getThumbnail(
-                    videoId: videosList[currentSongIndex].id))),
+                    videoId: videoList[currentSongIndex].id))),
           ),
           Container(
               child: Text(
-                  videosList[currentSongIndex]
+                  videoList[currentSongIndex]
                       .title, // Will be replaced with music title.
                   style: TextStyle(
                     color: Colors.white,
@@ -410,7 +408,7 @@ class _MusicControlState extends State<MusicControl> {
                   ))),
           Container(
               child: Text(
-                  videosList[currentSongIndex]
+                  videoList[currentSongIndex]
                       .channel, // Will be replaced with music artist.
                   style: TextStyle(
                     color: Colors.white,
