@@ -50,10 +50,7 @@ class _PlayListState extends State<PlayListMainScreen> {
 
   //Method that creates the row of the name of the song,
   //duration and bump-up button.
-  Widget videoInfo(song) {
-    Video videoLocal = new Video();
-    videoLocal = song;
-
+  Widget videoInfo(video) {
     return Card(
       color: const Color(0xFF261D1D),
       child: Row(
@@ -64,7 +61,7 @@ class _PlayListState extends State<PlayListMainScreen> {
           GestureDetector(
             child: Container(
               child: Align(
-                child: Text(videoLocal.title,
+                child: Text(video.title,
                     style: TextStyle(
                       color: Colors.white,
                     )),
@@ -75,11 +72,11 @@ class _PlayListState extends State<PlayListMainScreen> {
             ),
             onTap: () {
               print('play the song');
-              navigateToMusicControl(context, videoLocal.id);
+              navigateToMusicControl(context, video.id);
             },
           ),
           Container(
-            child: Text(videoLocal.duration,
+            child: Text(video.duration,
                 style: TextStyle(
                   color: Colors.white,
                 )),
