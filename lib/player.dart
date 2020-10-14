@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:youtube_api/youtube_api.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:async';
-import 'video.dart';
 import 'database_provider.dart';
+import 'model/video.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await DatabaseProvider.init();
+
   runApp(MaterialApp(
     home: PlayListMainScreen(),
   ));
@@ -16,14 +21,84 @@ void main() {
 //on the songs, the page will go to musicControl screen; a bump-up
 //button that can prioritize song that users click on
 class PlayListMainScreen extends StatefulWidget {
+  PlayListMainScreen({Key key}) : super(key: key);
+
   @override
   _PlayListState createState() => _PlayListState();
 }
 
-Video currentVideo;
+//Video currentVideo;
+List<Video> videoPlaylist
+= [
+  Video(
+      title: "maple leaf rag",
+      channel: "Jazz VEVO",
+      id: "ZYqy7pBqbw4",
+      duration: "3:44"),
+  Video(
+      title: "Medallo City",
+      channel: "Classic VEVO",
+      id: "XKjpVgpXoLI",
+      duration: "5:44"),
+  Video(
+      title: "Bohemian Rhapsody",
+      channel: "Rock VEVO",
+      id: "fJ9rUzIMcZQ",
+      duration: "2:44"),
+];
+
+//Method that creates the row of the name of the song,
+//duration and bump-up button.
+Widget videoInfo(video) {
+  Video videoLocal = new Video();
+  videoLocal = video;
+
+  return Card(
+    color: Color(0xFF261D1D),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
+        GestureDetector(
+          child: Container(
+            child: Align(
+              child: Text(videoLocal.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+              alignment: Alignment.centerLeft,
+            ),
+            width: 320,
+            height: 50,
+          ),
+          onTap: () {
+            print('play the song');
+            navigateToMusicControl(context);
+          },
+        ),
+        Container(
+          child: Text(videoLocal.duration,
+              style: TextStyle(
+                color: Colors.white,
+              )),
+        ),
+        Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
+        GestureDetector(
+          child: Icon(
+            Icons.arrow_drop_up,
+            color: Colors.white,
+          ),
+          onTap: () {
+            print('bump-up');
+          },
+        ),
+      ],
+    ),
+  );
+}
 
 class _PlayListState extends State<PlayListMainScreen> {
-  
   //playlist screen
   @override
   Widget build(BuildContext context) {
@@ -46,26 +121,49 @@ class _PlayListState extends State<PlayListMainScreen> {
                     })
               ]),
         ),
-        body: FutureBuilder<List<Video>>(
-            future: DatabaseProvider.db.getAllVideos(),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<Video>> snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Video item = snapshot.data[index];
-                    return ListTile(
-                      title: Text(item.title),
-                      leading: Text(item.duration.toString()),
-                    );
-                  },
-                );
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            }));
+        body: Scrollbar(
+            child: ListView(
+          scrollDirection: Axis.vertical,
+          children: videoPlaylist.map((video) => videoInfo(video)).toList(),
+        ))
+        // body: FutureBuilder<List<Video>>(
+        //     //future: DatabaseProvider.db.getAllVideos(),
+        //     builder:
+        //         (BuildContext context, AsyncSnapshot<List<Video>> snapshot) {
+        //   if (snapshot.hasData) {
+        //     return ListView.builder(
+        //       itemCount: snapshot.data.length,
+        //       itemBuilder: (BuildContext context, int index) {
+        //         Video item = snapshot.data[index];
+        //         return ListTile(
+        //           title: Text(item.title),
+        //           leading: Text(item.duration.toString()),
+        //         );
+        //       },
+        //     );
+        //   } else {
+        //     return Center(child: CircularProgressIndicator());
+        //   }
+        // })
+        );
   }
+
+  // getAllVideos() async {
+  //   var res = await DatabaseProvider.query(Video.table);
+  //   List<Video> list =
+  //       res.isNotEmpty ? res.map((c) => Video.fromMap(c)).toList() : [];
+  //   return list;
+  // }
+
+  // void addVideoToList(Video video) async {
+  //   await DatabaseProvider.insert(Video.table, video);
+  //   refresh();
+  // }
+
+  // void deleteFromList(Video video) async {
+  //   DatabaseProvider.delete(Video.table, video);
+  //   refresh();
+  // }
 }
 
 //Method that navigates from playlist screen to musiccontrol screen
@@ -74,7 +172,28 @@ Future navigateToMusicControl(context) async {
       context, MaterialPageRoute(builder: (context) => MusicControl()));
 }
 
+Future addVideoToList(Video video) async {
+  await DatabaseProvider.insert(Video.table,video);
+  refresh();
+}
 
+Future deleteFromList(Video video) async {
+  DatabaseProvider.delete(Video.table, video);
+  //refresh();
+}
+
+Future refresh() async {
+  List<Map<String, dynamic>> results =
+      await DatabaseProvider.query(Video.table);
+  videoPlaylist = results.map((video) => Video.fromMap(video)).toList();
+  //setState(() {});
+}
+
+@override
+Future initState() {
+  refresh();
+  //super.initState();
+}
 
 
 
@@ -105,7 +224,19 @@ Future<List<Video>> search(String q, YoutubeAPI api) async {
   return results;
 }
 
+
+
+
+
+
+
+
 class DataSearch extends SearchDelegate<String> {
+  // void addVideoToList(Video video) async {
+  //   await DatabaseProvider.insert(Video.table, video);
+
+  // }
+
   static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
   YoutubeAPI ytApi = YoutubeAPI(key);
 
@@ -120,6 +251,7 @@ class DataSearch extends SearchDelegate<String> {
     "Wake Me Up",
     "We Are The World"
   ];
+  
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -213,12 +345,18 @@ class DataSearch extends SearchDelegate<String> {
               GestureDetector(
                   child: Icon(Icons.add),
                   onTap: () {
-                    DatabaseProvider.db.newVideo(new Video(
-                        title: ytResult[index].description,
-                        id: ytResult[index].channelId,
-                        channel: ytResult[index].channelTitle,
-                        duration: ytResult[index].duration));
-                  })
+                    print('add');
+                    videoPlaylist.add(Video(
+                      title: "maple leaf rag",
+                      id: "ZYqy7pBqbw4",
+                      channel: "Jazz VEVO",
+                      duration: "3:44",
+                      // title: ytResult[index].title,
+                      // id: ytResult[index].channelId,
+                      // channel: ytResult[index].channelTitle,
+                      // duration: ytResult[index].duration)
+                    ));
+                  }),
             ],
           ),
         ),
@@ -262,20 +400,6 @@ class DataSearch extends SearchDelegate<String> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //musiccontrol screen
 class MusicControl extends StatefulWidget {
