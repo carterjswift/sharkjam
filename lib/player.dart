@@ -19,32 +19,21 @@ class PlayListMainScreen extends StatefulWidget {
 }
 
 List<Video> videoList = [
-  Video(title: "maple leaf rag", channel: "Jazz VEVO", id: "ZYqy7pBqbw4", duration: "3:44"),
-  Video(title: "Medallo City", channel: "Classic VEVO", id: "XKjpVgpXoLI", duration: "5:44"),
-  Video(title: "Bohemian Rhapsody", channel: "Rock VEVO", id: "fJ9rUzIMcZQ", duration: "2:44"),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35'),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23'),
-];
+  Video(title: "maple leaf rag", channel: "Jazz VEVO", id: "ZYqy7pBqbw4", duration: "3:44", playListIndex: 0),
+  Video(title: "Medallo City", channel: "Classic VEVO", id: "XKjpVgpXoLI", duration: "5:44", playListIndex: 1),
+  Video(title: "Bohemian Rhapsody", channel: "Rock VEVO", id: "fJ9rUzIMcZQ", duration: "2:44", playListIndex: 2),
+  Video(title: 'Percussion Gun', channel: "Carlos Gimenez", id: "CynBybGqdMY", duration: '3:07', playListIndex: 3),
+  Video(title: 'Jedi Temple March', channel: "Star Wars III", id: "h2n7j1iUHuk", duration: '3:45', playListIndex: 4),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 5),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 6),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 7),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 8),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 9),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 10),
+  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 11),
+  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 12),
 
-Video currentVideo;
+];
 
 class _PlayListState extends State<PlayListMainScreen> {
   //Create a stateful list for now
@@ -74,7 +63,7 @@ class _PlayListState extends State<PlayListMainScreen> {
             ),
             onTap: () {
               print('play the song');
-              navigateToMusicControl(context, video.id);
+              navigateToMusicControl(context, video.id, video.playListIndex);
             },
           ),
           Container(
@@ -133,9 +122,9 @@ class _PlayListState extends State<PlayListMainScreen> {
 }
 
 //Method that navigates from playlist screen to musiccontrol screen
-Future navigateToMusicControl(context, String id) async {
+Future navigateToMusicControl(context, String id, int index) async {
   Navigator.push(
-      context, MaterialPageRoute(builder: (context) => MusicControl()));
+      context, MaterialPageRoute(builder: (context) => MusicControl(index)));
   // TODO: Implement playing/retrieving music from ID.
 }
 
@@ -236,7 +225,7 @@ class DataSearch extends SearchDelegate<String> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Padding(padding: EdgeInsets.only(right: 20.0)),
+              // Padding(padding: EdgeInsets.only(right: 20.0)),
               Image.network(
                 ytResult[index].thumbnail['default']['url'],
               ),
@@ -258,6 +247,13 @@ class DataSearch extends SearchDelegate<String> {
                         ),
                         // Padding(padding: EdgeInsets.only(bottom: 3.0)),
                       ])),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    color: Colors.white,
+                    onPressed: () {
+                      videoList.add(index);
+                    },
+                  ),
               // Add Button/ Check
             ],
           ),
@@ -267,9 +263,7 @@ class DataSearch extends SearchDelegate<String> {
           Video video = new Video(title: ytResult[index].title, channel: ytResult[index].channelTitle, id: ytResult[index].id, duration: ytResult[index].duration);
           videoList.add(video);
           print(videoList.elementAt(videoList.length-1).title);
-
-          String vidID = ytResult[index].id;
-          navigateToMusicControl(context, vidID);
+          navigateToMusicControl(context, video.id, video.playListIndex);
           },
       ),
     );
@@ -305,16 +299,32 @@ class DataSearch extends SearchDelegate<String> {
 
 //musiccontrol screen
 class MusicControl extends StatefulWidget {
+  int index;
+  MusicControl(this.index);
+
   @override
-  _MusicControlState createState() => _MusicControlState();
+  _MusicControlState createState() => _MusicControlState(index);
 }
 // Original Music Control class.
 class _MusicControlState extends State<MusicControl> {
+  int currentSongIndex;
+
+  _MusicControlState(this.currentSongIndex) {
+    _controller = YoutubePlayerController(
+      initialVideoId: videoList[currentSongIndex].id,
+      flags: flags,
+    );
+    _player = YoutubePlayer(
+        controller: _controller,
+        width: 0,
+        onReady: () {
+          setState(() {});
+        });
+  }
 
   YoutubePlayerController _controller;
   YoutubePlayer _player;
   YoutubePlayerFlags flags = YoutubePlayerFlags(autoPlay: false);
-  int currentSongIndex = 0;
   bool isPlaying = false;
 
   void toggle() {
@@ -357,19 +367,6 @@ class _MusicControlState extends State<MusicControl> {
 
   void playPrev() {
     playNewSong(currentSongIndex - 1);
-  }
-
-  _MusicControlState() {
-    _controller = YoutubePlayerController(
-      initialVideoId: videoList[currentSongIndex].id,
-      flags: flags,
-    );
-    _player = YoutubePlayer(
-        controller: _controller,
-        width: 0,
-        onReady: () {
-          setState(() {});
-        });
   }
 
   @override

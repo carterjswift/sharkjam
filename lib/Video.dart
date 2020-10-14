@@ -3,8 +3,9 @@ class Video {
   String id;
   String channel;
   String duration;
+  int playListIndex;
 
-  Video({this.title, this.channel, this.id, this.duration});
+  Video({this.title, this.channel, this.id, this.duration, this.playListIndex});
 
   String get videoTitle {
     return title;
@@ -22,6 +23,10 @@ class Video {
     return duration;
   }
 
+  int get videoPlayListIndex{
+    return playListIndex;
+  }
+
   set videoTitle(String title) {
     this.title = title;
   }
@@ -36,5 +41,9 @@ class Video {
 
   set videoURL(String duration) {
     this.duration = duration;
+  }
+
+  set videoPlayListIndex(int index) {
+    this.playListIndex = index;
   }
 }
