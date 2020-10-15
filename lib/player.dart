@@ -73,15 +73,15 @@ class _PlayListState extends State<PlayListMainScreen> {
                 )),
           ),
           Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-          GestureDetector(
-            child: Icon(
-              Icons.arrow_drop_up,
-              color: Colors.white,
-            ),
-            onTap: () {
-              print('bump-up');
-            },
-          ),
+          // GestureDetector(
+          //   child: Icon(
+          //     Icons.arrow_drop_up,
+          //     color: Colors.white,
+          //   ),
+          //   onTap: () {
+          //     print('bump-up');
+          //   },
+          // ),
         ],
       ),
     );
@@ -305,7 +305,7 @@ class MusicControl extends StatefulWidget {
   @override
   _MusicControlState createState() => _MusicControlState(index);
 }
-// Original Music Control class.
+
 class _MusicControlState extends State<MusicControl> {
   int currentSongIndex;
 
