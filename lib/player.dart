@@ -112,7 +112,7 @@ class _PlayListState extends State<PlayListMainScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 16.0))
             ],
           ),
-        ),
+        
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
