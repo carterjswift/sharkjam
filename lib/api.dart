@@ -332,3 +332,98 @@
 //       whereArgs: [name],
 //     );
 //   }
+
+
+
+
+// void addVideoToList() async {
+//   Video video =
+//       Video(title: _title, id: _id, channel: _channel, duration: _duration);
+
+//   await DatabaseProvider.insert(Video.table, video);
+//   await DatabaseProvider.update(Video.table, video);
+
+//   setState() {
+//     _title = '';
+//     _id = '';
+//     _channel = '';
+//     _duration = '';
+//   }
+
+  //refresh();
+// }
+
+// void addVideoToList() async {
+
+//   Video video = Video(
+//     title: _title,
+//     id: _id,
+//     channel: _channel,
+//     duration: _duration
+//   );
+
+//   await DatabaseProvider.insert(Video.table, video);
+//   await DatabaseProvider.update(Video.table, video);
+
+//   setState(() => _title = '' );
+
+//   refresh();
+// }
+
+// Future deleteFromList(Video video) async {
+//   DatabaseProvider.delete(Video.table, video);
+//   //refresh();
+// }
+
+// getAllVideos() async {
+  //   var res = await DatabaseProvider.query(Video.table);
+  //   List<Video> list =
+  //       res.isNotEmpty ? res.map((c) => Video.fromMap(c)).toList() : [];
+  //   return list;
+  // }
+
+  // void addVideoToList(Video video) async {
+  //   await DatabaseProvider.insert(Video.table, video);
+  //   refresh();
+  // }
+
+  // void deleteFromList(Video video) async {
+  //   DatabaseProvider.delete(Video.table, video);
+  //   refresh();
+  // }
+
+// Future refresh() async {
+//   List<Map<String, dynamic>> results =
+//       await DatabaseProvider.query(Video.table);
+//   videos = results.map((video) => Video.fromMap(video)).toList();
+//   //setState(() {});
+// }
+
+// @override
+// Future initState() {
+//   refresh();
+//   //super.initState();
+// }
+
+
+
+
+  // body: FutureBuilder<List<Video>>(
+        //     //future: DatabaseProvider.db.getAllVideos(),
+        //     builder:
+        //         (BuildContext context, AsyncSnapshot<List<Video>> snapshot) {
+        //   if (snapshot.hasData) {
+        //     return ListView.builder(
+        //       itemCount: snapshot.data.length,
+        //       itemBuilder: (BuildContext context, int index) {
+        //         Video item = snapshot.data[index];
+        //         return ListTile(
+        //           title: Text(item.title),
+        //           leading: Text(item.duration.toString()),
+        //         );
+        //       },
+        //     );
+        //   } else {
+        //     return Center(child: CircularProgressIndicator());
+        //   }
+        // })

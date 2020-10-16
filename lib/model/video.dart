@@ -1,27 +1,28 @@
 import 'model.dart';
-
+import 'package:meta/meta.dart';
 
 class Video extends Model {
+  static String table = "videos_database";
 
-  static String table = 'videos_database';
-
-  String title;
   String id;
+  String title;
+  //String videoId;
   String channel;
   String duration;
 
   Video({
+    @required this.id,
     this.title,
-    this.id,
+    //this.videoId,
     this.channel,
     this.duration,
   });
 
-
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
-      "title": title,
       "id": id,
+      "title": title,
+      //"videoId": videoId,
       "channel": channel,
       "duration": duration,
     };
@@ -32,12 +33,14 @@ class Video extends Model {
   }
 
   static Video fromMap(Map<String, dynamic> map) {
-    return Video(
-      title: map["title"],
+    final v = Video(
       id: map["id"],
+      title: map["title"],
+      //videoId: map["videoId"],
       channel: map["channel"],
       duration: map["duration"],
     );
+    return v;
   }
 
   // String get videoTitle {

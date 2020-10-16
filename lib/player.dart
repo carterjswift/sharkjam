@@ -16,6 +16,29 @@ void main() async {
   ));
 }
 
+String _videoId;
+String _title;
+String _channel;
+String _duration;
+
+Future<bool> checkSong(YT_API vid) async {
+  List<Map<String, dynamic>> results =
+      await DatabaseProvider.query(Video.table);
+  List playList = results.map((video) => Video.fromMap(video)).toList();
+
+  bool hadSong;
+
+  playList.forEach((element) {
+    if (vid.id == element.id) {
+      hadSong = true;
+    } else {
+      hadSong = false;
+    }
+  });
+
+  return hadSong;
+}
+
 //Create the main screen which is a playlist with add button
 //that can nagivate users to searchMusic screen; if users click
 //on the songs, the page will go to musicControl screen; a bump-up
@@ -27,32 +50,9 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
-//Video currentVideo;
-List<Video> videoPlaylist
-= [
-  Video(
-      title: "maple leaf rag",
-      channel: "Jazz VEVO",
-      id: "ZYqy7pBqbw4",
-      duration: "3:44"),
-  Video(
-      title: "Medallo City",
-      channel: "Classic VEVO",
-      id: "XKjpVgpXoLI",
-      duration: "5:44"),
-  Video(
-      title: "Bohemian Rhapsody",
-      channel: "Rock VEVO",
-      id: "fJ9rUzIMcZQ",
-      duration: "2:44"),
-];
-
 //Method that creates the row of the name of the song,
 //duration and bump-up button.
-Widget videoInfo(video) {
-  Video videoLocal = new Video();
-  videoLocal = video;
-
+Widget singleVidWidget(video) {
   return Card(
     color: Color(0xFF261D1D),
     child: Row(
@@ -63,7 +63,7 @@ Widget videoInfo(video) {
         GestureDetector(
           child: Container(
             child: Align(
-              child: Text(videoLocal.title,
+              child: Text(video.title,
                   style: TextStyle(
                     color: Colors.white,
                   )),
@@ -78,7 +78,7 @@ Widget videoInfo(video) {
           },
         ),
         Container(
-          child: Text(videoLocal.duration,
+          child: Text(video.duration == null ? "-00:00" : video.duration,
               style: TextStyle(
                 color: Colors.white,
               )),
@@ -99,6 +99,51 @@ Widget videoInfo(video) {
 }
 
 class _PlayListState extends State<PlayListMainScreen> {
+  List<Video> videoPlaylist = [];
+  List<Widget> videos = [];
+
+  @override
+  void initState() {
+    updateVideoPlaylist();
+    super.initState();
+  }
+
+  void addVideoToList() async {
+    Video videoToAdd = Video(
+        id: _videoId, title: _title, channel: _channel, duration: _duration);
+
+    await DatabaseProvider.insert(Video.table, videoToAdd);
+    //await DatabaseProvider.update(Video.table, videoToAdd);
+
+    // setState(() => _videoId = '');
+    // setState(() => _title = '');
+    // setState(() =>_channel = '');
+    // setState(() =>_duration = '');
+    _videoId = '';
+    _title = '';
+    _channel = '';
+    _duration = '';
+
+    updateVideoPlaylist();
+  }
+
+  void deleteVideoFromList(Video videoDeleted) async {
+    await DatabaseProvider.delete(Video.table, videoDeleted);
+    updateVideoPlaylist();
+  }
+
+  void updateVideoPlaylist() async {
+    List<Map<String, dynamic>> results =
+        await DatabaseProvider.query(Video.table);
+    setState(() {
+      videoPlaylist = results.map((video) {
+        final v = Video.fromMap(video);
+        return v;
+      }).toList();
+      videos = videoPlaylist.map((video) => singleVidWidget(video)).toList();
+    });
+  }
+
   //playlist screen
   @override
   Widget build(BuildContext context) {
@@ -117,53 +162,18 @@ class _PlayListState extends State<PlayListMainScreen> {
                 IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () {
-                      showSearch(context: context, delegate: DataSearch());
+                      showSearch(
+                          context: context,
+                          delegate: DataSearch(onAdded: this.addVideoToList));
                     })
               ]),
         ),
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
-          children: videoPlaylist.map((video) => videoInfo(video)).toList(),
-        ))
-        // body: FutureBuilder<List<Video>>(
-        //     //future: DatabaseProvider.db.getAllVideos(),
-        //     builder:
-        //         (BuildContext context, AsyncSnapshot<List<Video>> snapshot) {
-        //   if (snapshot.hasData) {
-        //     return ListView.builder(
-        //       itemCount: snapshot.data.length,
-        //       itemBuilder: (BuildContext context, int index) {
-        //         Video item = snapshot.data[index];
-        //         return ListTile(
-        //           title: Text(item.title),
-        //           leading: Text(item.duration.toString()),
-        //         );
-        //       },
-        //     );
-        //   } else {
-        //     return Center(child: CircularProgressIndicator());
-        //   }
-        // })
-        );
+          children: videos,
+        )));
   }
-
-  // getAllVideos() async {
-  //   var res = await DatabaseProvider.query(Video.table);
-  //   List<Video> list =
-  //       res.isNotEmpty ? res.map((c) => Video.fromMap(c)).toList() : [];
-  //   return list;
-  // }
-
-  // void addVideoToList(Video video) async {
-  //   await DatabaseProvider.insert(Video.table, video);
-  //   refresh();
-  // }
-
-  // void deleteFromList(Video video) async {
-  //   DatabaseProvider.delete(Video.table, video);
-  //   refresh();
-  // }
 }
 
 //Method that navigates from playlist screen to musiccontrol screen
@@ -172,72 +182,33 @@ Future navigateToMusicControl(context) async {
       context, MaterialPageRoute(builder: (context) => MusicControl()));
 }
 
-Future addVideoToList(Video video) async {
-  await DatabaseProvider.insert(Video.table,video);
-  refresh();
-}
-
-Future deleteFromList(Video video) async {
-  DatabaseProvider.delete(Video.table, video);
-  //refresh();
-}
-
-Future refresh() async {
-  List<Map<String, dynamic>> results =
-      await DatabaseProvider.query(Video.table);
-  videoPlaylist = results.map((video) => Video.fromMap(video)).toList();
-  //setState(() {});
-}
-
-@override
-Future initState() {
-  refresh();
-  //super.initState();
-}
-
-
-
-
-
-
-
-
-
-
-
-List<YT_API> ytResult = [];
-List<Video> results = [];
-Future<List<Video>> search(String q, YoutubeAPI api) async {
-  ytResult = await api.search(q); // Perhaps this is taking too long?
-
-  ytResult.forEach((YT_API vid) {
-    // print(vid.title);             // Test
-    results.add(new Video(
-      // Add video data to results[]
-      title: vid.title,
-      channel: vid.channelTitle,
-      id: vid.id,
-      duration: vid.duration,
-    ));
-  });
-  print("ytResult length is " + ytResult.length.toString()); // Test
-  return results;
-}
-
-
-
-
-
-
-
-
 class DataSearch extends SearchDelegate<String> {
-  // void addVideoToList(Video video) async {
-  //   await DatabaseProvider.insert(Video.table, video);
+  bool added = false;
+  List<YT_API> ytResult = [];
+  List<Video> results = [];
 
-  // }
+  final VoidCallback onAdded;
 
-  static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
+  DataSearch({@required this.onAdded});
+
+  Future<List<Video>> search(String q, YoutubeAPI api) async {
+    ytResult = await api.search(q); // Perhaps this is taking too long?
+
+    ytResult.forEach((YT_API vid) {
+      // print(vid.title);             // Test
+      results.add(new Video(
+        // Add video data to results[]
+        id: vid.id,
+        title: vid.title,
+        channel: vid.channelTitle,
+        duration: vid.duration,
+      ));
+    });
+    print("ytResult length is " + ytResult.length.toString()); // Test
+    return results;
+  }
+
+  static String key = "AIzaSyDh-dsq8nTAqLnAsf3fTPIXssCchV4lmT0";
   YoutubeAPI ytApi = YoutubeAPI(key);
 
   final music = [
@@ -251,7 +222,7 @@ class DataSearch extends SearchDelegate<String> {
     "Wake Me Up",
     "We Are The World"
   ];
-  
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -277,7 +248,6 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     // Future<List<Video>> results = search(query, ytApi);
     search(query, ytApi);
     print(
@@ -308,67 +278,88 @@ class DataSearch extends SearchDelegate<String> {
   ///
   Widget listItem(index) {
     print("code run has reached listItem");
-    return Card(
-      child: GestureDetector(
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 7.0),
-          padding: EdgeInsets.all(12.0),
-          child: Row(
-            children: <Widget>[
-              Padding(padding: EdgeInsets.only(right: 15.0)),
-              Image.network(
-                ytResult[index].thumbnail['default']['url'],
+
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Card(
+          child: GestureDetector(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 7.0),
+              padding: EdgeInsets.all(12.0),
+              child: Row(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.only(right: 15.0)),
+                  Image.network(
+                    ytResult[index].thumbnail['default']['url'],
+                  ),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Expanded(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                        Text(
+                          ytResult[index].title,
+                          softWrap: true,
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                        Padding(padding: EdgeInsets.only(bottom: 1.5)),
+                        Text(
+                          ytResult[index].channelTitle,
+                          softWrap: true,
+                        ),
+                        Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                        // Text(
+                        //   ytResult[index].url,
+                        //   softWrap: true,
+                        // ),
+                      ])),
+                  Padding(padding: EdgeInsets.all(5)),
+                  RaisedButton(
+                    //onPressed: () {
+                    //if (await checkSong(ytResult[index]) ) {
+                    //print("no song");
+                    child: Icon(Icons.add),
+                    onPressed: () {
+                      print("add1");
+                      _title = ytResult[index].title;
+                      _videoId = ytResult[index].id;
+                      _channel = ytResult[index].channelTitle;
+                      _duration = ytResult[index].duration;
+                      print("add2");
+                      onAdded();
+                      print("add3");
+                      setState(() {
+                        print("add4");
+                        new Icon(Icons.check);
+                        print("5");
+                      });
+                    },
+                    // }
+                  ),
+                  // } else if (await checkSong(ytResult[index]) == true) {
+                  //   setState(() {
+                  //   added = false;
+                  //  });
+                  // }
+                  // },
+                  //child:
+                  //added ? new Icon(Icons.check) : new Icon(Icons.add))
+                ],
               ),
-              Padding(padding: EdgeInsets.all(8)),
-              Expanded(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                    Text(
-                      ytResult[index].title,
-                      softWrap: true,
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                    Padding(padding: EdgeInsets.only(bottom: 1.5)),
-                    Text(
-                      ytResult[index].channelTitle,
-                      softWrap: true,
-                    ),
-                    Padding(padding: EdgeInsets.only(bottom: 3.0)),
-                    // Text(
-                    //   ytResult[index].url,
-                    //   softWrap: true,
-                    // ),
-                  ])),
-              Padding(padding: EdgeInsets.all(5)),
-              GestureDetector(
-                  child: Icon(Icons.add),
-                  onTap: () {
-                    print('add');
-                    videoPlaylist.add(Video(
-                      title: "maple leaf rag",
-                      id: "ZYqy7pBqbw4",
-                      channel: "Jazz VEVO",
-                      duration: "3:44",
-                      // title: ytResult[index].title,
-                      // id: ytResult[index].channelId,
-                      // channel: ytResult[index].channelTitle,
-                      // duration: ytResult[index].duration)
-                    ));
-                  }),
-            ],
+            ),
+            onTap: () {
+              print('Add Song');
+              Video video = new Video(
+                  title: ytResult[index].title,
+                  duration: ytResult[index].duration);
+              //videos.add(video);
+              //print(videos.elementAt(videos.length - 1).title);
+              // navigateToMusicControl(context);
+            },
           ),
-        ),
-        onTap: () {
-          print('Add Song');
-          Video video = new Video(
-              title: ytResult[index].title, duration: ytResult[index].duration);
-          //videos.add(video);
-          //print(videos.elementAt(videos.length - 1).title);
-          // navigateToMusicControl(context);
-        },
-      ),
+        );
+      },
     );
   }
 
