@@ -1,16 +1,32 @@
-# sharkjam
+# SharkJam
 
-A new Flutter project.
+SharkJam is a cross-platform mobile app made using Flutter that provides an easy interface for
+gathered friends to build a playlist that everyone will enjoy. Just fire up
+SharkJam and pass around the phone to let everyone add their favorite songs,
+and you'll have a mutually agreeable playlist in no time.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Installation Instructions for Developers
 
-A few resources to get you started if this is your first Flutter project:
+ - Install VSCode (or preferred IDE)
+ [[macOS](https://code.visualstudio.com/docs/setup/mac)]
+ [[Linux](https://code.visualstudio.com/docs/setup/linux)]
+ [[Windows](https://code.visualstudio.com/docs/setup/windows)]
+    - In our experience VSCode is very easy to work with for flutter development, but other major IDEs, such as IntelliJ IDEA will work as well.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+ - Install Flutter
+    - Ensure you install either the iOS or Android Simulators in order to be able to run the code.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Install Flutter and Dart Plugins for your IDE
+    - [[VSCode](https://flutter.dev/docs/development/tools/vs-code)]
+    - [[IntelliJ IDEA](https://flutter.dev/docs/development/tools/android-studio)] 
+
+- Clone this Repo to your local machine
+    ```
+    git clone https://github.com/carterjswift/sharkjam
+    ```
+
+---
+
+## System Architecture
