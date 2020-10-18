@@ -6,17 +6,25 @@ class Video extends Model {
 
   String id;
   String title;
-  //String videoId;
   String channel;
   String duration;
+  int playListIndex;
 
-  Video({
-    @required this.id,
-    this.title,
-    //this.videoId,
-    this.channel,
-    this.duration,
-  });
+  Video(
+      {@required this.id,
+      this.title,
+      this.channel,
+      this.duration,
+      this.playListIndex});
+
+  set videoPlayListIndex(int index) {
+    this.playListIndex = index;
+  }
+
+  int get videoPlayListIndex{
+    return playListIndex;
+  }
+
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
