@@ -16,6 +16,9 @@ and you'll have a mutually agreeable playlist in no time.
     - In our experience VSCode is very easy to work with for flutter development, but other major IDEs, such as IntelliJ IDEA will work as well.
 
  - Install Flutter
+ [[macOS](https://flutter.dev/docs/get-started/install/macos)]
+ [[Linux](https://flutter.dev/docs/get-started/install/linux)]
+ [[Windows](https://flutter.dev/docs/get-started/install/windows)]
     - Ensure you install either the iOS or Android Simulators in order to be able to run the code.
 
 - Install Flutter and Dart Plugins for your IDE
@@ -27,6 +30,8 @@ and you'll have a mutually agreeable playlist in no time.
     git clone https://github.com/carterjswift/sharkjam
     ```
 
+- Create a `.env` file in your `sharkjam` directory and paste in a Youtube Data API key
+    - You can get an API key on the [Google API Console](https://console.developers.google.com)
+    - Syntax for `.env `:
+        ```KEY=Paste_API_key_here```
 ---
-
-## System Architecture
