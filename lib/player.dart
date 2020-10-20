@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-
 import 'package:youtube_api/youtube_api.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:async';
 import 'database_provider.dart';
 import 'model/video.dart';
+
+final playListKey = new GlobalKey<_PlayListState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,15 +13,18 @@ void main() async {
   await DatabaseProvider.init();
 
   runApp(MaterialApp(
-    home: PlayListMainScreen(),
-  ));
+      home: PlayListMainScreen(
+    key: playListKey,
+  )));
 }
+
+//final playListKey = new GlobalKey<_PlayListState>();
 
 String _videoId;
 String _title;
 String _channel;
 String _duration;
-int videoIndex;
+int _videoIndex;
 
 Future<bool> checkSong(YT_API vid) async {
   List<Map<String, dynamic>> results =
@@ -51,60 +55,11 @@ class PlayListMainScreen extends StatefulWidget {
   _PlayListState createState() => _PlayListState();
 }
 
-//Method that creates the row of the name of the song,
-//duration and bump-up button.
-// Widget singleVidWidget(video) {
-//   return Card(
-//     color: Color(0xFF261D1D),
-//     child: Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//       crossAxisAlignment: CrossAxisAlignment.center,
-//       children: <Widget>[
-//         Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-//         GestureDetector(
-//           child: Container(
-//             child: Align(
-//               child: Text(video.title,
-//                   style: TextStyle(
-//                     color: Colors.white,
-//                   )),
-//               alignment: Alignment.centerLeft,
-//             ),
-//             width: 320,
-//             height: 50,
-//           ),
-//           onTap: () {
-//             print('play the song');
-//             // dont know how to get "Buildcontext"
-//             navigateToMusicControl(context, video.id, video.playListIndex);
-//             print(video.id);
-//             print(video.playListIndex);
-//           },
-//         ),
-//         Container(
-//           child: Text(video.duration == null ? "-00:00" : video.duration,
-//               style: TextStyle(
-//                 color: Colors.white,
-//               )),
-//         ),
-//         Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-//         GestureDetector(
-//           child: Icon(
-//             Icons.arrow_drop_up,
-//             color: Colors.white,
-//           ),
-//           onTap: () {
-//             print('bump-up');
-//           },
-//         ),
-//       ],
-//     ),
-//   );
-// }
-
 class _PlayListState extends State<PlayListMainScreen> {
-  List<Video> videoPlaylist = [];
+  List<Video> _videoPlaylist = [];
   List<Widget> videos = [];
+
+  List<Video> get videoPlaylist => _videoPlaylist;
 
   @override
   void initState() {
@@ -118,7 +73,7 @@ class _PlayListState extends State<PlayListMainScreen> {
         title: _title,
         channel: _channel,
         duration: _duration,
-        playListIndex: videoIndex);
+        playListIndex: _videoIndex);
 
     await DatabaseProvider.insert(Video.table, videoToAdd);
 
@@ -126,6 +81,7 @@ class _PlayListState extends State<PlayListMainScreen> {
     _title = '';
     _channel = '';
     _duration = '';
+  
 
     updateVideoPlaylist();
   }
@@ -139,7 +95,7 @@ class _PlayListState extends State<PlayListMainScreen> {
     List<Map<String, dynamic>> results =
         await DatabaseProvider.query(Video.table);
     setState(() {
-      videoPlaylist = results.map((video) {
+      _videoPlaylist = results.map((video) {
         final v = Video.fromMap(video);
         return v;
       }).toList();
@@ -147,54 +103,56 @@ class _PlayListState extends State<PlayListMainScreen> {
     });
   }
 
+  //Method that creates the row of the name of the song,
+  //duration and bump-up button.
   Widget singleVidWidget(video) {
-  return Card(
-    color: Color(0xFF261D1D),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-        GestureDetector(
-          child: Container(
-            child: Align(
-              child: Text(video.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                  )),
-              alignment: Alignment.centerLeft,
+    return Card(
+      color: Color(0xFF261D1D),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
+          GestureDetector(
+            child: Container(
+              child: Align(
+                child: Text(video.title,
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+                alignment: Alignment.centerLeft,
+              ),
+              width: 320,
+              height: 50,
             ),
-            width: 320,
-            height: 50,
+            onTap: () {
+              print('play the song');
+              // dont know how to get "Buildcontext"
+              navigateToMusicControl(context, video.id, video.playListIndex);
+              print(video.id);
+              print(video.playListIndex);
+            },
           ),
-          onTap: () {
-            print('play the song');
-            // dont know how to get "Buildcontext"
-            navigateToMusicControl(context, video.id, video.playListIndex);
-            print(video.id);
-            print(video.playListIndex);
-          },
-        ),
-        Container(
-          child: Text(video.duration == null ? "-00:00" : video.duration,
-              style: TextStyle(
-                color: Colors.white,
-              )),
-        ),
-        Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-        GestureDetector(
-          child: Icon(
-            Icons.arrow_drop_up,
-            color: Colors.white,
+          Container(
+            child: Text(video.duration == null ? "-00:00" : video.duration,
+                style: TextStyle(
+                  color: Colors.white,
+                )),
           ),
-          onTap: () {
-            print('bump-up');
-          },
-        ),
-      ],
-    ),
-  );
-}
+          Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
+          GestureDetector(
+            child: Icon(
+              Icons.arrow_drop_up,
+              color: Colors.white,
+            ),
+            onTap: () {
+              print('bump-up');
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   //playlist screen
   @override
@@ -227,16 +185,7 @@ class _PlayListState extends State<PlayListMainScreen> {
         )));
   }
 
-  List<Video> VideoPlaylist() {
-    // List<Map<String, dynamic>> results =
-    //     await DatabaseProvider.query(Video.table);
-    // setState(() {
-    //   videoPlaylist = results.map((video) {
-    //     final v = Video.fromMap(video);
-    //     return v;
-    //   }).toList();
-    //   videos = videoPlaylist.map((video) => singleVidWidget(video)).toList();
-    // });
+  List<Video> exportVideoPlaylist() {
     return videoPlaylist;
   }
 }
@@ -393,12 +342,9 @@ class DataSearch extends SearchDelegate<String> {
                       _duration = ytResult[index].duration;
                       // failed to get the index & update the index
                       // the index is always 1
-                      videoIndex = PlayListMainScreen()
-                              .createState()
-                              .videoPlaylist
-                              .length +
-                          1;
-                      print(videoIndex);
+                      _videoIndex =
+                          playListKey.currentState.videoPlaylist.length + 1;
+                      print(_videoIndex);
                       onAdded();
                       setState(() {
                         new Icon(Icons.check);
@@ -475,9 +421,12 @@ class _MusicControlState extends State<MusicControl> {
   int currentSongIndex;
 
   // potential problem
-  List<Video> videoList = PlayListMainScreen().createState().videoPlaylist;
+  List<Video> videoList = playListKey.currentState.videoPlaylist;
 
-  _MusicControlState(this.currentSongIndex) {
+  _MusicControlState(index) {
+    //change here
+    this.currentSongIndex = index;
+    print(index);
     _controller = YoutubePlayerController(
       initialVideoId: videoList[currentSongIndex].id,
       flags: flags,

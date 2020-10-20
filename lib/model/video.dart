@@ -64,6 +64,7 @@ class Video extends Model {
       //"videoId": videoId,
       "channel": channel,
       "duration": duration,
+      "playListIndex": playListIndex
     };
     if (id != null) {
       map['id'] = id;
@@ -78,6 +79,7 @@ class Video extends Model {
       //videoId: map["videoId"],
       channel: map["channel"],
       duration: map["duration"],
+      playListIndex: map["playListIndex"]
     );
     return v;
   }

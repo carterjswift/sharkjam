@@ -24,7 +24,7 @@ abstract class DatabaseProvider {
   }
 
   static void onCreate(Database db, int version) async => await db.execute(
-      'CREATE TABLE videos_database (id VARCHAR(255) PRIMARY KEY NOT NULL, title TEXT , channel TEXT, duration TEXT)');
+      'CREATE TABLE videos_database (id VARCHAR(255) PRIMARY KEY NOT NULL, title TEXT , channel TEXT, duration TEXT, playListIndex INTEGER)');
 
   static Future<List<Map<String, dynamic>>> query(String table) async =>
       db.query(table);
