@@ -1,12 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_api/youtube_api.dart';
-import 'Video.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'dart:async';
+import 'database_provider.dart';
+import 'model/video.dart';
 
-void main() {
+final playListKey = new GlobalKey<_PlayListState>();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await DatabaseProvider.init();
+
   runApp(MaterialApp(
-    home: PlayListMainScreen(),
-  ));
+      home: PlayListMainScreen(
+    key: playListKey,
+  )));
+}
+
+//final playListKey = new GlobalKey<_PlayListState>();
+
+String _videoId;
+String _title;
+String _channel;
+String _duration;
+int _videoIndex;
+
+Future<bool> checkSong(YT_API vid) async {
+  List<Map<String, dynamic>> results =
+      await DatabaseProvider.query(Video.table);
+  List playList = results.map((video) => Video.fromMap(video)).toList();
+
+  bool hadSong;
+
+  playList.forEach((element) {
+    if (vid.id == element.id) {
+      hadSong = true;
+    } else {
+      hadSong = false;
+    }
+  });
+
+  return hadSong;
 }
 
 //Create the main screen which is a playlist with add button
@@ -14,36 +49,65 @@ void main() {
 //on the songs, the page will go to musicControl screen; a bump-up
 //button that can prioritize song that users click on
 class PlayListMainScreen extends StatefulWidget {
+  PlayListMainScreen({Key key}) : super(key: key);
+
   @override
   _PlayListState createState() => _PlayListState();
 }
 
-List<Video> videoList = [
-  Video(title: "maple leaf rag", channel: "Jazz VEVO", id: "ZYqy7pBqbw4", duration: "3:44", playListIndex: 0),
-  Video(title: "Medallo City", channel: "Classic VEVO", id: "XKjpVgpXoLI", duration: "5:44", playListIndex: 1),
-  Video(title: "Bohemian Rhapsody", channel: "Rock VEVO", id: "fJ9rUzIMcZQ", duration: "2:44", playListIndex: 2),
-  Video(title: 'Percussion Gun', channel: "Carlos Gimenez", id: "CynBybGqdMY", duration: '3:07', playListIndex: 3),
-  Video(title: 'Jedi Temple March', channel: "Star Wars III", id: "h2n7j1iUHuk", duration: '3:45', playListIndex: 4),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 5),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 6),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 7),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 8),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 9),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 10),
-  Video(title: 'On the Run', channel: "VEVO US", id: "asdflsdfkjks", duration: '3:35', playListIndex: 11),
-  Video(title: 'Dont You worry Child', channel: "VEVO Japan", id: "Yksf820Sk1l", duration: '3:23', playListIndex: 12),
-
-];
-
 class _PlayListState extends State<PlayListMainScreen> {
-  //Create a stateful list for now
-  // Moved to above so it can be referenced in other classes.
+  List<Video> _videoPlaylist = [];
+  List<Widget> videos = [];
+
+  List<Video> get videoPlaylist => _videoPlaylist;
+
+  @override
+  void initState() {
+    updateVideoPlaylist();
+    super.initState();
+  }
+
+  void addVideoToList() async {
+    Video videoToAdd = Video(
+        id: _videoId,
+        title: _title,
+        channel: _channel,
+        duration: _duration,
+        playListIndex: _videoIndex);
+
+    await DatabaseProvider.insert(Video.table, videoToAdd);
+
+    _videoId = '';
+    _title = '';
+    _channel = '';
+    _duration = '';
+  
+
+    updateVideoPlaylist();
+  }
+
+  void deleteVideoFromList(Video videoDeleted) async {
+    await DatabaseProvider.delete(Video.table, videoDeleted);
+    updateVideoPlaylist();
+  }
+
+  void updateVideoPlaylist() async {
+    List<Map<String, dynamic>> results =
+        await DatabaseProvider.query(Video.table);
+    setState(() {
+      _videoPlaylist = results.map((video) {
+        final v = Video.fromMap(video);
+        return v;
+      }).toList();
+      videos = videoPlaylist.map((video) => singleVidWidget(video)).toList();
+    });
+  }
 
   //Method that creates the row of the name of the song,
   //duration and bump-up button.
-  Widget videoInfo(video) {
+  Widget singleVidWidget(video) {
     return Card(
-      color: const Color(0xFF261D1D),
+      color: Color(0xFF261D1D),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,25 +127,28 @@ class _PlayListState extends State<PlayListMainScreen> {
             ),
             onTap: () {
               print('play the song');
+              // dont know how to get "Buildcontext"
               navigateToMusicControl(context, video.id, video.playListIndex);
+              print(video.id);
+              print(video.playListIndex);
             },
           ),
           Container(
-            child: Text(video.duration,
+            child: Text(video.duration == null ? "-00:00" : video.duration,
                 style: TextStyle(
                   color: Colors.white,
                 )),
           ),
           Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-          // GestureDetector(
-          //   child: Icon(
-          //     Icons.arrow_drop_up,
-          //     color: Colors.white,
-          //   ),
-          //   onTap: () {
-          //     print('bump-up');
-          //   },
-          // ),
+          GestureDetector(
+            child: Icon(
+              Icons.arrow_drop_up,
+              color: Colors.white,
+            ),
+            onTap: () {
+              print('bump-up');
+            },
+          ),
         ],
       ),
     );
@@ -91,35 +158,35 @@ class _PlayListState extends State<PlayListMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFF261D1D),
+        backgroundColor: Color(0xFF261D1D),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: AppBar(
-            //leading: Icon(Icons.arrow_back),
-            title: Text(
-              'your playlist',
-            ),
-            backgroundColor: const Color(0xFF261D1D),
-            centerTitle: true,
-            actions: <Widget>[
-              Padding(
-                  child: GestureDetector(
-                      onTap: () {
-                        print('Add Music');
-                        showSearch(context: context, delegate: DataSearch());
-                      },
-                      child: Icon(Icons.search)),
-                  padding: EdgeInsets.symmetric(horizontal: 16.0))
-            ],
-          ),
+              //leading: Icon(Icons.arrow_back),
+              title: Text(
+                'your playlist',
+              ),
+              backgroundColor: Color(0xFF261D1D),
+              centerTitle: true,
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      showSearch(
+                          context: context,
+                          delegate: DataSearch(onAdded: this.addVideoToList));
+                    })
+              ]),
         ),
-        
         body: Scrollbar(
             child: ListView(
           scrollDirection: Axis.vertical,
-          children: videoList.map((video) => videoInfo(video)).toList(),
-        ))
-        );
+          children: videos,
+        )));
+  }
+
+  List<Video> exportVideoPlaylist() {
+    return videoPlaylist;
   }
 }
 
@@ -127,29 +194,34 @@ class _PlayListState extends State<PlayListMainScreen> {
 Future navigateToMusicControl(context, String id, int index) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MusicControl(index)));
-  // TODO: Implement playing/retrieving music from ID.
-}
-
-List<YT_API> ytResult = [];
-List<Video> results = [];
-Future<List<Video>> search(String q, YoutubeAPI api) async {
-
-  ytResult = await api.search(q);   // Perhaps this is taking too long?
-
-  ytResult.forEach((YT_API vid) {
-    // print(vid.title);             // Test
-    results.add(new Video(        // Add video data to results[]
-      title: vid.title,
-      channel: vid.channelTitle,
-      id: vid.id,
-      duration: vid.duration,
-    ));
-  });
-  print("ytResult length is " + ytResult.length.toString());  // Test
-  return results;
 }
 
 class DataSearch extends SearchDelegate<String> {
+  bool added = false;
+  List<YT_API> ytResult = [];
+  List<Video> results = [];
+
+  final VoidCallback onAdded;
+
+  DataSearch({@required this.onAdded});
+
+  Future<List<Video>> search(String q, YoutubeAPI api) async {
+    ytResult = await api.search(q); // Perhaps this is taking too long?
+
+    ytResult.forEach((YT_API vid) {
+      // print(vid.title);             // Test
+      results.add(new Video(
+        // Add video data to results[]
+        id: vid.id,
+        title: vid.title,
+        channel: vid.channelTitle,
+        duration: vid.duration,
+      ));
+    });
+    print("ytResult length is " + ytResult.length.toString()); // Test
+    return results;
+  }
+
   static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
   YoutubeAPI ytApi = YoutubeAPI(key);
 
@@ -164,6 +236,7 @@ class DataSearch extends SearchDelegate<String> {
     "Wake Me Up",
     "We Are The World"
   ];
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -189,19 +262,21 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     // Future<List<Video>> results = search(query, ytApi);
     search(query, ytApi);
-    print("Submission successfully returned buildResults");   // Should be printed everytime query is entered.
+    print(
+        "Submission successfully returned buildResults"); // Should be printed everytime query is entered.
     ytResult.forEach((YT_API vid) {
-      print(vid.title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
+      print(vid
+          .title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
     });
     return Scaffold(
       backgroundColor: const Color(0xFF261D1D),
       body: Container(
         child: ListView.builder(
           itemCount: ytResult.length,
-          itemBuilder: (_, int index) => listItem(index, context),   // Not sure why but search result is not affected until second enter.
+          itemBuilder: (_, int index) => listItem(index,
+              context), // Not sure why but search result is not affected until second enter.
         ),
       ),
     );
@@ -215,82 +290,117 @@ class DataSearch extends SearchDelegate<String> {
   ///
   Widget listItem(index, context) {
     print("code run has reached listItem");
-    return Card(
-      color: const Color(0xFF261D1D),
-      child: GestureDetector(
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 7.0),
-          padding: EdgeInsets.all(12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              // Padding(padding: EdgeInsets.only(right: 20.0)),
-              Image.network(
-                ytResult[index].thumbnail['default']['url'],
-              ),
-              Expanded(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
+
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Card(
+          child: GestureDetector(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 7.0),
+              padding: EdgeInsets.all(12.0),
+              child: Row(
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.only(right: 15.0)),
+                  Image.network(
+                    ytResult[index].thumbnail['default']['url'],
+                  ),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Expanded(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
                         Text(
                           ytResult[index].title,
                           softWrap: true,
-                          style: TextStyle(color: Colors.white, fontSize: 18.0),
+                          style: TextStyle(fontSize: 18.0),
                         ),
                         Padding(padding: EdgeInsets.only(bottom: 1.5)),
                         Text(
                           ytResult[index].channelTitle,
                           softWrap: true,
-                          style: TextStyle(color: Colors.white),
                         ),
-                        // Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                        Padding(padding: EdgeInsets.only(bottom: 3.0)),
+                        // Text(
+                        //   ytResult[index].url,
+                        //   softWrap: true,
+                        // ),
                       ])),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    color: Colors.white,
+                  Padding(padding: EdgeInsets.all(5)),
+                  RaisedButton(
+                    //onPressed: () {
+                    //if (await checkSong(ytResult[index]) ) {
+                    //print("no song");
+                    child: Icon(Icons.add),
                     onPressed: () {
-                      videoList.add(index);
+                      _title = ytResult[index].title;
+                      _videoId = ytResult[index].id;
+                      _channel = ytResult[index].channelTitle;
+                      _duration = ytResult[index].duration;
+                      // failed to get the index & update the index
+                      // the index is always 1
+                      _videoIndex =
+                          playListKey.currentState.videoPlaylist.length;
+                      print(_videoIndex);
+                      onAdded();
+                      setState(() {
+                        new Icon(Icons.check);
+                      });
                     },
+                    // }
                   ),
-              // Add Button/ Check
-            ],
+                  // } else if (await checkSong(ytResult[index]) == true) {
+                  //   setState(() {
+                  //   added = false;
+                  //  });
+                  // }
+                  // },
+                  //child:
+                  //added ? new Icon(Icons.check) : new Icon(Icons.add))
+                ],
+              ),
+            ),
+            onTap: () {
+              // print('Add Song');
+              // Video video = new Video(
+              //     id:
+              //     title: ytResult[index].title,
+              //     duration: ytResult[index].duration);
+              // //videos.add(video);
+              // //print(videos.elementAt(videos.length - 1).title);
+              navigateToMusicControl(context, ytResult[index].id, index);
+            },
           ),
-        ),
-        onTap: () {
-          print('Add Song');
-          Video video = new Video(title: ytResult[index].title, channel: ytResult[index].channelTitle, id: ytResult[index].id, duration: ytResult[index].duration);
-          videoList.add(video);
-          print(videoList.elementAt(videoList.length-1).title);
-          // navigateToMusicControl(context, video.id, video.playListIndex);
-          },
-      ),
+        );
+      },
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty ? recentMusic : music.where((p) => p.startsWith(query)).toList();
+    final suggestionList = query.isEmpty
+        ? recentMusic
+        : music.where((p) => p.startsWith(query)).toList();
+    // search(query, ytApi);       // If this doesn't work, I don't know what else would.
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
-          onTap: (){
-            showResults(context);
-          },
-
-          leading: Icon(Icons.music_note),
-          title: RichText(text: TextSpan(
-            text: suggestionList[index].substring(0, query.length),
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            children: [
-              TextSpan(
-                text: suggestionList[index].substring(query.length),
-                style: TextStyle(color: Colors.grey)
-              )
-            ]
-          ),
+        onTap: () {
+          showResults(context);
+        },
+        leading: Icon(Icons.music_note),
+        title: RichText(
+          text: TextSpan(
+              text: suggestionList[index].substring(0, query.length),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              children: [
+                TextSpan(
+                    text: suggestionList[index].substring(query.length),
+                    style: TextStyle(color: Colors.grey))
+              ]),
         ),
       ),
-    itemCount: suggestionList.length,
+      itemCount: suggestionList.length,
     );
   }
 }
@@ -307,7 +417,13 @@ class MusicControl extends StatefulWidget {
 class _MusicControlState extends State<MusicControl> {
   int currentSongIndex;
 
-  _MusicControlState(this.currentSongIndex) {
+  // potential problem
+  List<Video> videoList = playListKey.currentState.videoPlaylist;
+
+  _MusicControlState(index) {
+    //change here
+    this.currentSongIndex = index;
+    print(index);
     _controller = YoutubePlayerController(
       initialVideoId: videoList[currentSongIndex].id,
       flags: flags,
