@@ -197,9 +197,6 @@ class DataSearch extends SearchDelegate<String> {
       print(vid.title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
     });
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Youtube API'),
-      // ),
       backgroundColor: const Color(0xFF261D1D),
       body: Container(
         child: ListView.builder(
@@ -265,7 +262,7 @@ class DataSearch extends SearchDelegate<String> {
           Video video = new Video(title: ytResult[index].title, channel: ytResult[index].channelTitle, id: ytResult[index].id, duration: ytResult[index].duration);
           videoList.add(video);
           print(videoList.elementAt(videoList.length-1).title);
-          navigateToMusicControl(context, video.id, video.playListIndex);
+          // navigateToMusicControl(context, video.id, video.playListIndex);
           },
       ),
     );
@@ -274,7 +271,6 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     final suggestionList = query.isEmpty ? recentMusic : music.where((p) => p.startsWith(query)).toList();
-    // search(query, ytApi);       // If this doesn't work, I don't know what else would.
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
           onTap: (){
@@ -462,37 +458,3 @@ class _MusicControlState extends State<MusicControl> {
     );
   }
 }
-
-//Method that navigates from playlist screen to searchmusic screen
-// Future navigateToSearchMusic(context) async {
-//   Navigator.push(
-//       context, MaterialPageRoute(builder: (context) => SearchMusic()));
-// }
-
-
-
-// //searchmusic screen
-// class SearchMusic extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: const Color(0xFF261D1D),
-//       appBar: AppBar(
-//           elevation: 0.0,
-//           backgroundColor: const Color(0xFF261D1D),
-//           leading: BackButton(
-//             color: Colors.white,
-//           ),
-//           title: Text("Add Music",
-//               style: TextStyle(color: Colors.white, fontSize: 25.0)),
-//           centerTitle: true,
-//           actions: <Widget>[
-//             IconButton(
-//                 icon: Icon(Icons.search),
-//                 onPressed: () {
-//                   showSearch(context: context, delegate: DataSearch());
-//                 })
-//           ]),
-//     );
-//   }
-// }
