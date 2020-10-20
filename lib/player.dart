@@ -222,7 +222,7 @@ class DataSearch extends SearchDelegate<String> {
     return results;
   }
 
-  static String key = "AIzaSyDh-dsq8nTAqLnAsf3fTPIXssCchV4lmT0";
+  static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
   YoutubeAPI ytApi = YoutubeAPI(key);
 
   final music = [
@@ -343,7 +343,7 @@ class DataSearch extends SearchDelegate<String> {
                       // failed to get the index & update the index
                       // the index is always 1
                       _videoIndex =
-                          playListKey.currentState.videoPlaylist.length + 1;
+                          playListKey.currentState.videoPlaylist.length;
                       print(_videoIndex);
                       onAdded();
                       setState(() {
