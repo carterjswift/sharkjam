@@ -35,3 +35,18 @@ and you'll have a mutually agreeable playlist in no time.
     - Syntax for `.env `:
         ```KEY=Paste_API_key_here```
 ---
+
+## How to Run the Application
+
+With all of the installation steps done, the app can be run from VSCode by
+clicking Run then "Start Debugging".
+
+## Common Issues
+
+- Performing many searches on the app will cause the API call quota to be reached.
+The only way around this currently is to wait for the next day or generate a
+new API key.
+
+- If you get errors relating to import statements, it's likely that not all
+necessary packages were installed. Running `flutter pub get` should resolve
+this.
