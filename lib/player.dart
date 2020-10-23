@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:youtube_api/youtube_api.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'database_provider.dart';
 import 'model/video.dart';
 
 final playListKey = new GlobalKey<_PlayListState>();
-
+var apiKey;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await DatabaseProvider.init();
+
+  await DotEnv().load(".env");
+  apiKey = DotEnv().env["KEY"];
 
   runApp(MaterialApp(
       home: PlayListMainScreen(
@@ -81,7 +85,6 @@ class _PlayListState extends State<PlayListMainScreen> {
     _title = '';
     _channel = '';
     _duration = '';
-  
 
     updateVideoPlaylist();
   }
@@ -209,7 +212,6 @@ class DataSearch extends SearchDelegate<String> {
     ytResult = await api.search(q); // Perhaps this is taking too long?
 
     ytResult.forEach((YT_API vid) {
-      // print(vid.title);             // Test
       results.add(new Video(
         // Add video data to results[]
         id: vid.id,
@@ -222,7 +224,7 @@ class DataSearch extends SearchDelegate<String> {
     return results;
   }
 
-  static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
+  static String key = apiKey;
   YoutubeAPI ytApi = YoutubeAPI(key);
 
   final music = [
@@ -262,7 +264,6 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // Future<List<Video>> results = search(query, ytApi);
     search(query, ytApi);
     print(
         "Submission successfully returned buildResults"); // Should be printed everytime query is entered.
@@ -281,8 +282,6 @@ class DataSearch extends SearchDelegate<String> {
       ),
     );
     // Create a list of cards by looping through the list, retrieving information and arranging them.
-    // for (Video vid in results)
-    // print(results);
   }
 
   ///
@@ -321,24 +320,15 @@ class DataSearch extends SearchDelegate<String> {
                           softWrap: true,
                         ),
                         Padding(padding: EdgeInsets.only(bottom: 3.0)),
-                        // Text(
-                        //   ytResult[index].url,
-                        //   softWrap: true,
-                        // ),
                       ])),
                   Padding(padding: EdgeInsets.all(5)),
                   RaisedButton(
-                    //onPressed: () {
-                    //if (await checkSong(ytResult[index]) ) {
-                    //print("no song");
                     child: Icon(Icons.add),
                     onPressed: () {
                       _title = ytResult[index].title;
                       _videoId = ytResult[index].id;
                       _channel = ytResult[index].channelTitle;
                       _duration = ytResult[index].duration;
-                      // failed to get the index & update the index
-                      // the index is always 1
                       _videoIndex =
                           playListKey.currentState.videoPlaylist.length;
                       print(_videoIndex);
@@ -349,25 +339,10 @@ class DataSearch extends SearchDelegate<String> {
                     },
                     // }
                   ),
-                  // } else if (await checkSong(ytResult[index]) == true) {
-                  //   setState(() {
-                  //   added = false;
-                  //  });
-                  // }
-                  // },
-                  //child:
-                  //added ? new Icon(Icons.check) : new Icon(Icons.add))
                 ],
               ),
             ),
             onTap: () {
-              // print('Add Song');
-              // Video video = new Video(
-              //     id:
-              //     title: ytResult[index].title,
-              //     duration: ytResult[index].duration);
-              // //videos.add(video);
-              // //print(videos.elementAt(videos.length - 1).title);
               navigateToMusicControl(context, ytResult[index].id, index);
             },
           ),
@@ -381,7 +356,6 @@ class DataSearch extends SearchDelegate<String> {
     final suggestionList = query.isEmpty
         ? recentMusic
         : music.where((p) => p.startsWith(query)).toList();
-    // search(query, ytApi);       // If this doesn't work, I don't know what else would.
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: () {
