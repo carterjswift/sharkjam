@@ -33,8 +33,18 @@ and you'll have a mutually agreeable playlist in no time.
 - Create a `.env` file in your `sharkjam` directory and paste in a Youtube Data API key
     - You can get an API key on the [Google API Console](https://console.developers.google.com)
     - Syntax for `.env `:
-        ```KEY=Paste_API_key_here```
+        `KEY=Paste_API_key_here`
 ---
+
+## System Architecture
+
+Below is a diagram of how the main components of the app interact with eachother.
+Red arrows represent operations that require network connectivity, blue
+arrows represent flow of data, and orange arrows represent UI relationships.
+
+![Sharkjam Architecture](Sharkitecture-1.png)
+
+
 
 ## How to Run the Application
 
@@ -50,3 +60,8 @@ new API key.
 - If you get errors relating to import statements, it's likely that not all
 necessary packages were installed. Running `flutter pub get` should resolve
 this.
+
+### Clearing the Database
+
+To clear the database, uncomment line 18 in `database_provider.dart` and refresh
+the application.
