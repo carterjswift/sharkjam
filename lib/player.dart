@@ -6,13 +6,17 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'database_provider.dart';
 import 'model/video.dart';
 
+//global key to allow access to Playlist Screen instance variables
 final playListKey = new GlobalKey<_PlayListState>();
+
+//key for the Youtube Data API v3
 var apiKey;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await DatabaseProvider.init();
 
+  //Load api key from .env
   await DotEnv().load(".env");
   apiKey = DotEnv().env["KEY"];
 
