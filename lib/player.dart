@@ -44,10 +44,11 @@ Future<bool> checkSong(YT_API vid) async {
   return hadSong;
 }
 
-//Create the main screen which is a playlist with add button
-//that can nagivate users to searchMusic screen; if users click
-//on the songs, the page will go to musicControl screen; a bump-up
-//button that can prioritize song that users click on
+/// Create the main screen which is a playlist with add button
+/// that can nagivate users to searchMusic screen; if users click
+/// on the songs, the page will go to musicControl screen; a bump-up
+/// button that can prioritize song that users click on.
+
 class PlayListMainScreen extends StatefulWidget {
   PlayListMainScreen({Key key}) : super(key: key);
 
@@ -81,7 +82,6 @@ class _PlayListState extends State<PlayListMainScreen> {
     _title = '';
     _channel = '';
     _duration = '';
-  
 
     updateVideoPlaylist();
   }
@@ -103,18 +103,17 @@ class _PlayListState extends State<PlayListMainScreen> {
     });
   }
 
-  //Method that creates the row of the name of the song,
-  //duration and bump-up button.
+  /// Method that creates the row of the name of the song and the duration.
   Widget singleVidWidget(video) {
-    return Card(
-      color: Color(0xFF261D1D),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-          GestureDetector(
-            child: Container(
+    return GestureDetector(
+      child: Card(
+        color: Color(0xFF261D1D),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
+            Container(
               child: Align(
                 child: Text(video.title,
                     style: TextStyle(
@@ -125,36 +124,25 @@ class _PlayListState extends State<PlayListMainScreen> {
               width: 320,
               height: 50,
             ),
-            onTap: () {
-              print('play the song');
-              // dont know how to get "Buildcontext"
-              navigateToMusicControl(context, video.id, video.playListIndex);
-              print(video.id);
-              print(video.playListIndex);
-            },
-          ),
-          Container(
-            child: Text(video.duration == null ? "-00:00" : video.duration,
-                style: TextStyle(
-                  color: Colors.white,
-                )),
-          ),
-          Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
-          GestureDetector(
-            child: Icon(
-              Icons.arrow_drop_up,
-              color: Colors.white,
+            Container(
+              child: Text(video.duration == null ? "-00:00" : video.duration,
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
             ),
-            onTap: () {
-              print('bump-up');
-            },
-          ),
-        ],
+            Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0)),
+          ],
+        ),
       ),
+      onTap: () {
+        navigateToMusicControl(context, video.id, video.playListIndex);
+        print(video.id);
+        print(video.playListIndex);
+      },
     );
   }
 
-  //playlist screen
+  /// Playlist screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,9 +150,8 @@ class _PlayListState extends State<PlayListMainScreen> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: AppBar(
-              //leading: Icon(Icons.arrow_back),
               title: Text(
-                'your playlist',
+                'My Playlist',
               ),
               backgroundColor: Color(0xFF261D1D),
               centerTitle: true,
@@ -190,7 +177,7 @@ class _PlayListState extends State<PlayListMainScreen> {
   }
 }
 
-//Method that navigates from playlist screen to musiccontrol screen
+/// Method that navigates from playlist screen to musiccontrol screen
 Future navigateToMusicControl(context, String id, int index) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MusicControl(index)));
@@ -206,10 +193,9 @@ class DataSearch extends SearchDelegate<String> {
   DataSearch({@required this.onAdded});
 
   Future<List<Video>> search(String q, YoutubeAPI api) async {
-    ytResult = await api.search(q); // Perhaps this is taking too long?
+    ytResult = await api.search(q);
 
     ytResult.forEach((YT_API vid) {
-      // print(vid.title);             // Test
       results.add(new Video(
         // Add video data to results[]
         id: vid.id,
@@ -218,24 +204,11 @@ class DataSearch extends SearchDelegate<String> {
         duration: vid.duration,
       ));
     });
-    print("ytResult length is " + ytResult.length.toString()); // Test
     return results;
   }
 
   static String key = "AIzaSyDtm8y4FrVMUEeTSFV1e98D1OHB7MeLb9k";
   YoutubeAPI ytApi = YoutubeAPI(key);
-
-  final music = [
-    "On The Run", // Should be replaced with a list of available youTube video names
-    "Wake Me Up",
-    "We Are The World"
-  ];
-
-  final recentMusic = [
-    "On The Run", // Will be replaced with recent music names
-    "Wake Me Up",
-    "We Are The World"
-  ];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -262,34 +235,27 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // Future<List<Video>> results = search(query, ytApi);
     search(query, ytApi);
-    print(
-        "Submission successfully returned buildResults"); // Should be printed everytime query is entered.
+    print("Submission successfully returned buildResults");
     ytResult.forEach((YT_API vid) {
-      print(vid
-          .title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
+      print(vid.title);
     });
     return Scaffold(
       backgroundColor: const Color(0xFF261D1D),
       body: Container(
         child: ListView.builder(
           itemCount: ytResult.length,
-          itemBuilder: (_, int index) => listItem(index,
-              context), // Not sure why but search result is not affected until second enter.
+          itemBuilder: (_, int index) => listItem(index, context),
         ),
       ),
     );
-    // Create a list of cards by looping through the list, retrieving information and arranging them.
-    // for (Video vid in results)
-    // print(results);
   }
 
   ///
-  /// Code copied from youtube_api page.
+  /// Code retrieved from youtube_api page.
   ///
   Widget listItem(index, context) {
-    print("code run has reached listItem");
+    print("Code run has reached listItem");
 
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
@@ -321,24 +287,15 @@ class DataSearch extends SearchDelegate<String> {
                           softWrap: true,
                         ),
                         Padding(padding: EdgeInsets.only(bottom: 3.0)),
-                        // Text(
-                        //   ytResult[index].url,
-                        //   softWrap: true,
-                        // ),
                       ])),
                   Padding(padding: EdgeInsets.all(5)),
                   RaisedButton(
-                    //onPressed: () {
-                    //if (await checkSong(ytResult[index]) ) {
-                    //print("no song");
                     child: Icon(Icons.add),
                     onPressed: () {
                       _title = ytResult[index].title;
                       _videoId = ytResult[index].id;
                       _channel = ytResult[index].channelTitle;
                       _duration = ytResult[index].duration;
-                      // failed to get the index & update the index
-                      // the index is always 1
                       _videoIndex =
                           playListKey.currentState.videoPlaylist.length;
                       print(_videoIndex);
@@ -361,13 +318,6 @@ class DataSearch extends SearchDelegate<String> {
               ),
             ),
             onTap: () {
-              // print('Add Song');
-              // Video video = new Video(
-              //     id:
-              //     title: ytResult[index].title,
-              //     duration: ytResult[index].duration);
-              // //videos.add(video);
-              // //print(videos.elementAt(videos.length - 1).title);
               navigateToMusicControl(context, ytResult[index].id, index);
             },
           ),
@@ -376,12 +326,11 @@ class DataSearch extends SearchDelegate<String> {
     );
   }
 
+  /// Override method of DataSearch.
+  /// We didn't implement this, but we needed an empty method for DataSearch to function.
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestionList = query.isEmpty
-        ? recentMusic
-        : music.where((p) => p.startsWith(query)).toList();
-    // search(query, ytApi);       // If this doesn't work, I don't know what else would.
+    final suggestionList = [];
     return ListView.builder(
       itemBuilder: (context, index) => ListTile(
         onTap: () {
@@ -405,7 +354,7 @@ class DataSearch extends SearchDelegate<String> {
   }
 }
 
-//musiccontrol screen
+/// Music Control Screen
 class MusicControl extends StatefulWidget {
   int index;
   MusicControl(this.index);
@@ -416,12 +365,9 @@ class MusicControl extends StatefulWidget {
 
 class _MusicControlState extends State<MusicControl> {
   int currentSongIndex;
-
-  // potential problem
   List<Video> videoList = playListKey.currentState.videoPlaylist;
 
   _MusicControlState(index) {
-    //change here
     this.currentSongIndex = index;
     print(index);
     _controller = YoutubePlayerController(
@@ -525,9 +471,6 @@ class _MusicControlState extends State<MusicControl> {
                     fontFamily: "Roboto",
                     fontSize: 20.0,
                   ))),
-          Container(
-              // child: Slider              // Will implement slider later.
-              ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
