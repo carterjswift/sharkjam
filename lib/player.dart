@@ -391,9 +391,10 @@ class MusicControl extends StatefulWidget {
 class _MusicControlState extends State<MusicControl> {
   int currentSongIndex;
 
-  // potential problem
+  // get the playlist from the playlist screen
   List<Video> videoList = playListKey.currentState.videoPlaylist;
 
+//Start the player at the selected song index
   _MusicControlState(index) {
     //change here
     this.currentSongIndex = index;
@@ -402,9 +403,11 @@ class _MusicControlState extends State<MusicControl> {
       initialVideoId: videoList[currentSongIndex].id,
       flags: flags,
     );
+
+    //Initialize the video player
     _player = YoutubePlayer(
         controller: _controller,
-        width: 0,
+        width: 0, // don't display video
         onReady: () {
           setState(() {});
         });
@@ -415,6 +418,7 @@ class _MusicControlState extends State<MusicControl> {
   YoutubePlayerFlags flags = YoutubePlayerFlags(autoPlay: false);
   bool isPlaying = false;
 
+//Toggle between playing and pausing
   void toggle() {
     setState(() {
       isPlaying = !isPlaying;
@@ -426,6 +430,7 @@ class _MusicControlState extends State<MusicControl> {
     }
   }
 
+//Play a song given the index in the playlist
   void playNewSong(int songIndex) {
     setState(() {
       if (songIndex >= videoList.length) {
@@ -445,14 +450,17 @@ class _MusicControlState extends State<MusicControl> {
     }
   }
 
+//Automatically play next song after current song ends
   void playAfterEnd(YoutubeMetaData _) {
     playNext();
   }
 
+//Play next song
   void playNext() {
     playNewSong(currentSongIndex + 1);
   }
 
+//Play previous song
   void playPrev() {
     playNewSong(currentSongIndex - 1);
   }
