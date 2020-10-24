@@ -114,5 +114,5 @@ Switching between three different API keys or Paying YouTube for more quota when
 
 ## Acknowledgements 
 
-Massive thanks to Professor Shila Sen, Preceptor Richard Tian, the Software Design and Development class (COMP 225-01) and usability-test participants for all their insight, support, and camaraderie.
+Massive thanks to Professor Shilad Sen, Preceptor Richard Tian, the Software Design and Development class (COMP 225-01) and usability-test participants for all their insight, support, and camaraderie.
 
