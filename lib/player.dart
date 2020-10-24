@@ -6,12 +6,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'database_provider.dart';
 import 'model/video.dart';
 
-//global key to allow access to Playlist Screen instance variables
+//Global key to allow access to Playlist Screen instance variables
 final playListKey = new GlobalKey<_PlayListState>();
 
-//key for the Youtube Data API v3
+//Key for the Youtube Data API v3
 var apiKey;
+
 void main() async {
+  //Method that ensures the Flutter app initializes properly while initializing
+  //the database with await DB.init()
   WidgetsFlutterBinding.ensureInitialized();
 
   await DatabaseProvider.init();
@@ -26,36 +29,18 @@ void main() async {
   )));
 }
 
-//final playListKey = new GlobalKey<_PlayListState>();
-
+//Instance variables that can be accessed from different classes, especially
+//used in Datasearch class when calling addVidToList() method
 String _videoId;
 String _title;
 String _channel;
 String _duration;
 int _videoIndex;
 
-Future<bool> checkSong(YT_API vid) async {
-  List<Map<String, dynamic>> results =
-      await DatabaseProvider.query(Video.table);
-  List playList = results.map((video) => Video.fromMap(video)).toList();
-
-  bool hadSong;
-
-  playList.forEach((element) {
-    if (vid.id == element.id) {
-      hadSong = true;
-    } else {
-      hadSong = false;
-    }
-  });
-
-  return hadSong;
-}
-
-//Create the main screen which is a playlist with add button
-//that can nagivate users to searchMusic screen; if users click
-//on the songs, the page will go to musicControl screen; a bump-up
-//button that can prioritize song that users click on
+//Class that creates the main screen which is a playlist with add-button that
+//can nagivate users to searchMusic screen; if users click on the songs, the
+//page will go to musicControl screen; a bump-up button that can prioritize
+//songs that users click on
 class PlayListMainScreen extends StatefulWidget {
   PlayListMainScreen({Key key}) : super(key: key);
 
@@ -66,15 +51,16 @@ class PlayListMainScreen extends StatefulWidget {
 class _PlayListState extends State<PlayListMainScreen> {
   List<Video> _videoPlaylist = [];
   List<Widget> videos = [];
-
   List<Video> get videoPlaylist => _videoPlaylist;
 
+//Method that ensures the playlist can update all the time the app is running
   @override
   void initState() {
     updateVideoPlaylist();
     super.initState();
   }
 
+//Method that adds one video object to the database
   void addVideoToList() async {
     Video videoToAdd = Video(
         id: _videoId,
@@ -93,11 +79,13 @@ class _PlayListState extends State<PlayListMainScreen> {
     updateVideoPlaylist();
   }
 
+//Method that deletes one video object from the database
   void deleteVideoFromList(Video videoDeleted) async {
     await DatabaseProvider.delete(Video.table, videoDeleted);
     updateVideoPlaylist();
   }
 
+//Method that updates the playlist List by importing data from the database
   void updateVideoPlaylist() async {
     List<Map<String, dynamic>> results =
         await DatabaseProvider.query(Video.table);
@@ -110,8 +98,8 @@ class _PlayListState extends State<PlayListMainScreen> {
     });
   }
 
-  //Method that creates the row of the name of the song,
-  //duration and bump-up button.
+  //Method that creates one row of the name of the song, duration and bump-up
+  //button
   Widget singleVidWidget(video) {
     return Card(
       color: Color(0xFF261D1D),
@@ -191,18 +179,16 @@ class _PlayListState extends State<PlayListMainScreen> {
           children: videos,
         )));
   }
-
-  List<Video> exportVideoPlaylist() {
-    return videoPlaylist;
-  }
 }
 
-//Method that navigates from playlist screen to musiccontrol screen
+//Method that navigates from playlist screen to musicControl screen
 Future navigateToMusicControl(context, String id, int index) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MusicControl(index)));
 }
 
+//Class that creates a search page with search box, which is the searchMusic
+//screen
 class DataSearch extends SearchDelegate<String> {
   bool added = false;
   List<YT_API> ytResult = [];
@@ -231,17 +217,9 @@ class DataSearch extends SearchDelegate<String> {
   static String key = apiKey;
   YoutubeAPI ytApi = YoutubeAPI(key);
 
-  final music = [
-    "On The Run", // Should be replaced with a list of available youTube video names
-    "Wake Me Up",
-    "We Are The World"
-  ];
+  final music = ["On The Run", "Wake Me Up", "We Are The World"];
 
-  final recentMusic = [
-    "On The Run", // Will be replaced with recent music names
-    "Wake Me Up",
-    "We Are The World"
-  ];
+  final recentMusic = ["On The Run", "Wake Me Up", "We Are The World"];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -266,26 +244,24 @@ class DataSearch extends SearchDelegate<String> {
         });
   }
 
+  //Widget that create a list of cards by looping through the list, retrieving
+  //information and arranging them.
   @override
   Widget buildResults(BuildContext context) {
     search(query, ytApi);
-    print(
-        "Submission successfully returned buildResults"); // Should be printed everytime query is entered.
+    print("Submission successfully returned buildResults");
     ytResult.forEach((YT_API vid) {
-      print(vid
-          .title); // Test whether ytResult is updated at this point => Nope it's not. The size is correct though.
+      print(vid.title);
     });
     return Scaffold(
       backgroundColor: const Color(0xFF261D1D),
       body: Container(
         child: ListView.builder(
           itemCount: ytResult.length,
-          itemBuilder: (_, int index) => listItem(index,
-              context), // Not sure why but search result is not affected until second enter.
+          itemBuilder: (_, int index) => listItem(index, context),
         ),
       ),
     );
-    // Create a list of cards by looping through the list, retrieving information and arranging them.
   }
 
   ///
@@ -341,7 +317,6 @@ class DataSearch extends SearchDelegate<String> {
                         new Icon(Icons.check);
                       });
                     },
-                    // }
                   ),
                 ],
               ),
@@ -383,7 +358,7 @@ class DataSearch extends SearchDelegate<String> {
   }
 }
 
-//musiccontrol screen
+//Class that creates a musicControl screen
 class MusicControl extends StatefulWidget {
   int index;
   MusicControl(this.index);
@@ -398,7 +373,7 @@ class _MusicControlState extends State<MusicControl> {
   // get the playlist from the playlist screen
   List<Video> videoList = playListKey.currentState.videoPlaylist;
 
-//Start the player at the selected song index
+  //Start the player at the selected song index
   _MusicControlState(index) {
     //change here
     this.currentSongIndex = index;
@@ -422,7 +397,7 @@ class _MusicControlState extends State<MusicControl> {
   YoutubePlayerFlags flags = YoutubePlayerFlags(autoPlay: false);
   bool isPlaying = false;
 
-//Toggle between playing and pausing
+  //Toggle between playing and pausing
   void toggle() {
     setState(() {
       isPlaying = !isPlaying;
@@ -434,7 +409,7 @@ class _MusicControlState extends State<MusicControl> {
     }
   }
 
-//Play a song given the index in the playlist
+  //Play a song given the index in the playlist
   void playNewSong(int songIndex) {
     setState(() {
       if (songIndex >= videoList.length) {
@@ -454,17 +429,17 @@ class _MusicControlState extends State<MusicControl> {
     }
   }
 
-//Automatically play next song after current song ends
+  //Automatically play next song after current song ends
   void playAfterEnd(YoutubeMetaData _) {
     playNext();
   }
 
-//Play next song
+  //Play next song
   void playNext() {
     playNewSong(currentSongIndex + 1);
   }
 
-//Play previous song
+  //Play previous song
   void playPrev() {
     playNewSong(currentSongIndex - 1);
   }

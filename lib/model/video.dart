@@ -29,11 +29,11 @@ class Video extends Model {
     return id;
   }
 
-  String get videoDuration{
+  String get videoDuration {
     return duration;
   }
 
-  int get videoPlayListIndex{
+  int get videoPlayListIndex {
     return playListIndex;
   }
 
@@ -56,12 +56,12 @@ class Video extends Model {
   set videoPlayListIndex(int index) {
     this.playListIndex = index;
   }
-  
+
+  //Method that returns a map that will be used in player class
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "id": id,
       "title": title,
-      //"videoId": videoId,
       "channel": channel,
       "duration": duration,
       "playListIndex": playListIndex
@@ -72,15 +72,15 @@ class Video extends Model {
     return map;
   }
 
+  //Method that returns a video Object from a map that will be used in player
+  //class
   static Video fromMap(Map<String, dynamic> map) {
     final v = Video(
-      id: map["id"],
-      title: map["title"],
-      //videoId: map["videoId"],
-      channel: map["channel"],
-      duration: map["duration"],
-      playListIndex: map["playListIndex"]
-    );
+        id: map["id"],
+        title: map["title"],
+        channel: map["channel"],
+        duration: map["duration"],
+        playListIndex: map["playListIndex"]);
     return v;
   }
 }
