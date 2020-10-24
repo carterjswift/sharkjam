@@ -265,7 +265,7 @@ class DataSearch extends SearchDelegate<String> {
   }
 
   ///
-  /// Code copied from youtube_api page.
+  /// Code referenced from youtube_api example page.
   ///
   Widget listItem(index, context) {
     print("code run has reached listItem");
