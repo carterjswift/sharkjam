@@ -65,3 +65,19 @@ this.
 
 To clear the database, uncomment line 18 in `database_provider.dart` and refresh
 the application.
+
+## Known Bugs
+
+After conducting usability tests with 9 participants, some bugs are found.
+
+### Bug#1
+
+The user needs to press Enter / Search twice to get the desired search result.
+
+#### Cause
+
+The search result screen is created before the API finishes loading all the search results ➡︎ Empty screen.
+
+#### Solution 
+
+Make the buildResult await retrieving the search result.
