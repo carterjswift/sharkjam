@@ -81,3 +81,38 @@ The search result screen is created before the API finishes loading all the sear
 #### Solution 
 
 Make the buildResult await retrieving the search result.
+
+### Bug#2
+
+The cover doesn’t appear for video-based thumbnails.
+
+#### Cause
+
+The cover only loads static image thumbnails
+
+#### Solution 
+
+Our next step would be to have it load video files.
+
+### Bug#3
+
+The YouTube API key reaches the daily quota after a few searches.
+
+#### Cause
+
+The YouTube API has different “costs” for different operations. The operations that the app performs are causing the “quota exceeded” error.
+
+#### Solution 
+
+Switching between three different API keys or Paying YouTube for more quota when there is financial support.
+
+## Authors
+
+- Carter Swift 
+- Shosuke Noma
+- James Yang 
+
+## Acknowledgements 
+
+Massive thanks to Professor Shila Sen, Preceptor Richard Tian, the Software Design and Development class (COMP 225-01) and usability-test participants for all their insight, support, and camaraderie.
+
